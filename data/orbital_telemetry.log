@@ -1281,3 +1281,4 @@
 [2025-10-23T11:35:00] test(orbital): add unit test for trajectory deflection math
 [2025-10-23T14:42:51] docs(telemetry): record planetary defense simulation run
 [2025-10-23T20:10:52] feat(impact): calculate localized shockwave radius
+[2025-09-05T16:53:27] refactor(engine): modularize celestial collision detector
