@@ -1288,3 +1288,4 @@
 [2025-09-05T08:02:03] style(canvas): enhance asteroid fragment trail rendering
 [2025-09-05T20:26:27] fix(physics): adjust kinetic impact energy calculation
 [2025-09-05T17:21:40] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2025-09-05T10:50:07] feat(trajectory): calibrate atmospheric entry drag coefficient
