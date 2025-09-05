@@ -1294,3 +1294,4 @@
 [2025-09-05T08:47:41] style(canvas): enhance asteroid fragment trail rendering
 [2025-09-05T15:34:49] fix(physics): adjust kinetic impact energy calculation
 [2025-09-05T16:36:00] test(orbital): add unit test for trajectory deflection math
+[2025-09-05T15:42:45] fix(physics): adjust kinetic impact energy calculation
