@@ -323,3 +323,4 @@
 [2025-11-22T08:03:41] docs(telemetry): record planetary defense simulation run
 [2025-11-22T23:02:02] docs(telemetry): record planetary defense simulation run
 [2025-11-22T15:09:55] perf(simulation): optimize orbital path interpolation cache
+[2025-09-11T18:20:24] refactor(engine): modularize celestial collision detector
