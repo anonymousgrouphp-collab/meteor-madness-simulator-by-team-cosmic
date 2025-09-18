@@ -953,3 +953,4 @@
 [2025-09-18T21:02:13] docs(telemetry): record planetary defense simulation run
 [2025-09-18T19:39:46] fix(physics): adjust kinetic impact energy calculation
 [2025-09-18T09:06:42] test(orbital): add unit test for trajectory deflection math
+[2025-09-18T22:44:44] feat(trajectory): calibrate atmospheric entry drag coefficient
