@@ -963,3 +963,4 @@
 [2025-09-18T12:34:50] test(orbital): add unit test for trajectory deflection math
 [2025-09-18T20:40:36] docs(telemetry): record planetary defense simulation run
 [2025-09-18T12:21:36] fix(physics): adjust kinetic impact energy calculation
+[2025-09-18T17:01:49] style(canvas): enhance asteroid fragment trail rendering
