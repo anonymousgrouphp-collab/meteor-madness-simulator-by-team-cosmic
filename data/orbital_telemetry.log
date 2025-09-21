@@ -2273,3 +2273,4 @@
 [2025-09-21T10:52:45] refactor(engine): modularize celestial collision detector
 [2025-09-21T10:02:57] fix(physics): adjust kinetic impact energy calculation
 [2025-09-21T22:20:40] docs(telemetry): record planetary defense simulation run
+[2025-09-21T18:34:55] style(canvas): enhance asteroid fragment trail rendering
