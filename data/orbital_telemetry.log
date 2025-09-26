@@ -1846,3 +1846,4 @@
 [2025-09-26T19:05:27] style(canvas): enhance asteroid fragment trail rendering
 [2025-09-26T10:04:36] test(orbital): add unit test for trajectory deflection math
 [2025-09-26T18:27:17] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2025-09-26T10:36:46] refactor(engine): modularize celestial collision detector
