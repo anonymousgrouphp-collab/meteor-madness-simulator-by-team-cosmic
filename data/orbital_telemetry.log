@@ -1851,3 +1851,4 @@
 [2025-09-26T23:22:51] perf(simulation): optimize orbital path interpolation cache
 [2025-09-26T09:30:51] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-09-26T12:01:16] perf(simulation): optimize orbital path interpolation cache
+[2025-09-26T21:10:42] feat(trajectory): calibrate atmospheric entry drag coefficient
