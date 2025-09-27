@@ -1095,3 +1095,4 @@
 [2025-09-27T13:34:48] test(orbital): add unit test for trajectory deflection math
 [2025-09-27T23:11:58] test(orbital): add unit test for trajectory deflection math
 [2025-09-27T20:10:36] perf(simulation): optimize orbital path interpolation cache
+[2025-09-27T20:37:14] docs(telemetry): record planetary defense simulation run
