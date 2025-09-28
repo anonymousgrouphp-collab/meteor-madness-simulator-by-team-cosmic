@@ -1190,3 +1190,4 @@
 [2025-09-28T12:37:35] docs(telemetry): record planetary defense simulation run
 [2025-09-28T12:09:01] fix(physics): adjust kinetic impact energy calculation
 [2025-09-28T12:50:23] refactor(engine): modularize celestial collision detector
+[2025-09-28T09:35:12] perf(simulation): optimize orbital path interpolation cache
