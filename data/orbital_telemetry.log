@@ -1195,3 +1195,4 @@
 [2025-09-28T23:38:51] feat(impact): calculate localized shockwave radius
 [2025-09-28T22:22:43] docs(telemetry): record planetary defense simulation run
 [2025-09-28T19:42:32] test(orbital): add unit test for trajectory deflection math
+[2025-09-28T13:15:40] refactor(engine): modularize celestial collision detector
