@@ -11,13 +11,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Cosmic Neutrals -->
-    <!-- Application Structure Plan: The application is designed as an interactive, task-oriented dashboard with two primary modes: a creative 'Sandbox' and a goal-oriented 'Challenge Mode'. This dual-mode structure caters to different user motivations—free exploration vs. problem-solving. The core user flow remains centered on the control panel, a central visualizer, and a consequence analysis section. New features like the interactive global map and live NASA data loading are integrated directly into the control flow to enhance realism and user agency. The addition of conversational AI and a shareable report card transforms the tool from a simple simulator into a complete educational and collaborative platform. This structure was chosen to maximize user engagement, educational depth, and direct interaction with real-world scientific concepts. -->
+    <!-- Application Structure Plan: The application is designed as an interactive, task-oriented dashboard with two primary modes: a creative 'Sandbox' and a goal-oriented 'Challenge Mode'. This structure caters to different user motivations—free exploration vs. problem-solving. The core user flow is centered on the control panel, a central visualizer, and a consequence analysis section. Features like the interactive global map and live NASA data loading enhance realism. The core analysis feature is an automatically generated, data-driven impact briefing that provides instant, reliable feedback to the user without external dependencies. A new context-sensitive mitigation briefing panel provides on-demand educational content. -->
     <!-- Visualization & Content Choices: 
-        - Live NASA Data: Report Info -> Goal: Inform/Organize -> Viz: Interactive List -> Interaction: Click to load -> Justification: Directly connects the simulation to real, timely scientific data, fulfilling a core challenge requirement.
-        - Global Impact Map: Report Info -> Goal: Organize/Inform -> Viz: 2D Canvas Map -> Interaction: Click to select impact point -> Justification: Dramatically increases user immersion and provides a clear geographical context for the impact, making the threat feel more tangible.
-        - Advanced Mitigation: Report Info -> Goal: Compare/Change -> Viz: Dropdown Menu -> Interaction: Select strategy -> Justification: Expands the user's problem-solving toolkit and introduces them to a wider range of scientific concepts for planetary defense.
-        - Shareable Report Card: Report Info -> Goal: Synthesize/Inform -> Viz: Formatted Modal -> Interaction: Copy to clipboard -> Justification: Encourages social sharing and outreach, allowing users to easily communicate their simulation results and learnings.
-        - Conversational AI: Report Info -> Goal: Inform/Explore -> Viz: Chat Interface -> Interaction: Follow-up questions -> Justification: Creates a powerful, open-ended learning tool where users can explore their own curiosity in depth with an AI analyst.
+        - Live NASA Data: Report Info -> Goal: Inform/Organize -> Viz: Interactive List -> Interaction: Click to load -> Justification: Connects the simulation to real scientific data.
+        - Global Impact Map: Report Info -> Goal: Organize/Inform -> Viz: 2D Canvas Map -> Interaction: Click to select impact point -> Justification: Increases user immersion and provides geographical context.
+        - Automatic Impact Briefing: Report Info -> Goal: Synthesize/Inform -> Viz: Formatted Modal Text -> Interaction: Button click -> Justification: Provides instant, reliable, and detailed analysis of the simulation results.
+        - Mitigation Briefing: Report Info -> Goal: Inform -> Viz: Dynamic Text Panel -> Interaction: Select from dropdown -> Justification: Provides immediate, context-sensitive educational information about planetary defense technologies, directly addressing a core challenge goal.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -25,17 +24,26 @@
         .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; max-height: 400px; }
         .slider-thumb-orange::-webkit-slider-thumb { background-color: #f97316; }
         .slider-thumb-orange::-moz-range-thumb { background-color: #f97316; }
-        .gemini-button { transition: all 0.2s ease-in-out; }
-        .gemini-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
-        .prose h3 { color: #fb923c; margin-bottom: 0.5rem; }
+        .action-button { transition: all 0.2s ease-in-out; }
+        .action-button:hover { transform: translateY(-px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
+        .prose h3 { color: #fb923c; margin-bottom: 0.5rem; font-size: 1.1em; }
         .prose ul { list-style-position: inside; padding-left: 0; }
         .prose li, .prose p { margin-bottom: 0.75rem; }
         .mode-button.active { background-color: #ea580c; color: white; }
         .nasa-item:hover { background-color: #3f3f46; }
-        /* Accessibility Focus Styles */
         button:focus, select:focus, input[type=range]:focus, input[type=checkbox]:focus {
             outline: 2px solid #fb923c;
             outline-offset: 2px;
+        }
+        .briefing-panel {
+            transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .briefing-panel.visible {
+            max-height: 500px; /* Or a sufficiently large value */
+            opacity: 1;
         }
     </style>
 </head>
@@ -109,8 +117,11 @@
                            </select>
                        </div>
                        <p id="mitigation-status" class="text-sm mt-2 text-gray-400">No mitigation strategy selected.</p>
-                       <div class="mt-4">
-                           <button id="brainstorm-mitigation" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg gemini-button" aria-label="Brainstorm more mitigation plans with AI">✨ Brainstorm More Plans</button>
+                       <!-- NEW: Mitigation Briefing Panel -->
+                       <div id="mitigation-briefing-container" class="briefing-panel mt-4 bg-gray-900/50 p-4 rounded-lg prose text-gray-300 text-sm">
+                           <h4 id="mitigation-title" class="text-orange-400 font-bold"></h4>
+                           <p id="mitigation-description"></p>
+                           <div id="mitigation-details"></div>
                        </div>
                     </div>
                 </div>
@@ -146,7 +157,7 @@
                             </div>
                         </div>
                         <div class="mt-6">
-                             <button id="generate-report" class="w-full bg-orange-600 text-white font-bold py-2 px-4 rounded-lg mb-4 gemini-button" aria-label="Generate a detailed impact report with AI" disabled>✨ Ask an AI Analyst for a Detailed Report</button>
+                             <button id="generate-briefing" class="w-full bg-orange-600 text-white font-bold py-2 px-4 rounded-lg mb-4 action-button" aria-label="Generate a detailed impact briefing" disabled>Generate Impact Briefing</button>
                              <div class="chart-container">
                                 <canvas id="energy-chart"></canvas>
                             </div>
@@ -157,26 +168,20 @@
         </main>
         
         <footer class="text-center mt-8 md:mt-12 text-gray-500 text-sm">
-            <p>A project for the 2025 NASA Space Apps Challenge. Inspired by data from NASA's NEO API and USGS environmental datasets. Enhanced with Google Gemini.</p>
+            <p>A project for the 2025 NASA Space Apps Challenge. Inspired by data from NASA's NEO API and USGS environmental datasets.</p>
             <p>Project by Team Cosmic 🚀</p>
             <p>&copy; 2025 Meteor Madness Simulator</p>
         </footer>
     </div>
     
     <!-- Modals -->
-    <div id="gemini-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+    <div id="briefing-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-gray-700">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 id="modal-title" class="text-xl font-bold text-orange-400">AI Analyst Response</h3>
+                <h3 class="text-xl font-bold text-orange-400">Planetary Defense Briefing</h3>
                 <button id="close-modal" class="text-gray-400 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
             </div>
             <div id="modal-content" class="p-6 overflow-y-auto flex-grow prose text-gray-300"></div>
-            <div id="follow-up-container" class="p-4 border-t border-gray-700 hidden">
-                <div class="flex space-x-2">
-                    <input type="text" id="follow-up-input" placeholder="Ask a follow-up question..." class="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500">
-                    <button id="send-follow-up" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg" aria-label="Send follow-up question">Send</button>
-                </div>
-            </div>
         </div>
     </div>
     
@@ -198,41 +203,32 @@
     <script type="module">
         // --- Main Application Setup ---
         document.addEventListener('DOMContentLoaded', () => {
-            // State management object
             const appState = {
-                mode: 'sandbox', // 'sandbox' or 'challenge'
+                mode: 'sandbox',
                 diameter: 140,
                 velocity: 20,
                 location: 'inland',
                 mitigation: 'none',
                 impactEnergy: 0,
                 isAudioEnabled: false,
-                geminiConversationHistory: [],
             };
 
             // --- DOM Element Cache ---
             const dom = {
-                // Modals
                 audioModal: document.getElementById('audio-modal'),
                 enableAudioBtn: document.getElementById('enable-audio'),
-                geminiModal: document.getElementById('gemini-modal'),
-                modalTitle: document.getElementById('modal-title'),
+                briefingModal: document.getElementById('briefing-modal'),
                 modalContent: document.getElementById('modal-content'),
                 closeModalBtn: document.getElementById('close-modal'),
-                followUpContainer: document.getElementById('follow-up-container'),
-                followUpInput: document.getElementById('follow-up-input'),
-                sendFollowUpBtn: document.getElementById('send-follow-up'),
                 reportCardModal: document.getElementById('report-card-modal'),
                 reportCardContent: document.getElementById('report-card-content'),
                 closeReportCardBtn: document.getElementById('close-report-card'),
                 copyReportCardBtn: document.getElementById('copy-report-card'),
                 clipboardHelper: document.getElementById('clipboard-helper'),
-                // Mode Selection
                 modeSandboxBtn: document.getElementById('mode-sandbox'),
                 modeChallengeBtn: document.getElementById('mode-challenge'),
                 scenarioTitle: document.getElementById('scenario-title'),
                 scenarioDescription: document.getElementById('scenario-description'),
-                // Controls
                 loadNasaDataBtn: document.getElementById('load-nasa-data'),
                 nasaDataContainer: document.getElementById('nasa-data-container'),
                 nasaDataList: document.getElementById('nasa-data-list'),
@@ -243,35 +239,32 @@
                 locationValue: document.getElementById('location-value'),
                 mitigationSelect: document.getElementById('mitigation-strategy'),
                 mitigationStatus: document.getElementById('mitigation-status'),
-                brainstormBtn: document.getElementById('brainstorm-mitigation'),
-                // Visuals & Analysis
+                // NEW: Mitigation Briefing elements
+                mitigationBriefingContainer: document.getElementById('mitigation-briefing-container'),
+                mitigationTitle: document.getElementById('mitigation-title'),
+                mitigationDescription: document.getElementById('mitigation-description'),
+                mitigationDetails: document.getElementById('mitigation-details'),
                 impactStatus: document.getElementById('impact-status'),
                 energyValue: document.getElementById('energy-value'),
                 craterValue: document.getElementById('crater-value'),
                 seismicValue: document.getElementById('seismic-value'),
                 hazardValue: document.getElementById('hazard-value'),
-                generateReportBtn: document.getElementById('generate-report'),
+                generateBriefingBtn: document.getElementById('generate-briefing'),
                 shareReportCardBtn: document.getElementById('share-report-card'),
-                // Canvases
                 trajectoryCanvas: document.getElementById('trajectory-canvas'),
                 mapCanvas: document.getElementById('map-canvas'),
                 energyChartCanvas: document.getElementById('energy-chart'),
             };
 
-            // --- Canvas & Chart Contexts ---
             const t_ctx = dom.trajectoryCanvas.getContext('2d');
             const m_ctx = dom.mapCanvas.getContext('2d');
             const offscreenMapCanvas = document.createElement('canvas');
             const offscreen_m_ctx = offscreenMapCanvas.getContext('2d');
             let energyChart;
             
-            // --- Constants ---
             const ASTEROID_DENSITY = 3000;
-            const API_KEY = "";
-            const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
             const NASA_API_KEY = 'DEMO_KEY'; 
 
-            // --- Sound Engine (Tone.js) ---
             const soundEngine = {
                 uiClick: new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.0, release: 0.1 } }).toDestination(),
                 success: new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 } }).toDestination(),
@@ -281,7 +274,42 @@
                 playImpact() { if(appState.isAudioEnabled) this.impact.triggerAttackRelease('1n'); },
             };
 
-            // --- Core Functions ---
+            // NEW: Mitigation Briefing Content
+            const mitigationBriefings = {
+                kinetic_impactor: {
+                    title: "Kinetic Impactor",
+                    description: "This strategy involves striking the asteroid with a high-speed projectile to alter its trajectory through momentum transfer. It's like a cosmic game of billiards.",
+                    details: `
+                        <p class="mt-2"><strong>Real-World Example:</strong> NASA's DART (Double Asteroid Redirection Test) mission successfully demonstrated this technology in 2022.</p>
+                        <ul>
+                            <li><strong>Pros:</strong> Technology is proven and relatively straightforward.</li>
+                            <li><strong>Cons:</strong> Requires precise targeting years in advance; effectiveness depends on the asteroid's composition.</li>
+                        </ul>
+                    `
+                },
+                gravity_tractor: {
+                    title: "Gravity Tractor",
+                    description: "A massive spacecraft is positioned near the asteroid. Over a long period (years to decades), its subtle gravitational pull gently tugs the asteroid onto a new, safe course.",
+                     details: `
+                        <p class="mt-2"><strong>Concept Status:</strong> This is a well-studied concept that relies on fundamental physics but has not yet been tested in a dedicated mission.</p>
+                        <ul>
+                            <li><strong>Pros:</strong> Highly precise and controllable, making it very safe.</li>
+                            <li><strong>Cons:</strong> Extremely slow process; only effective on smaller asteroids (under 500m).</li>
+                        </ul>
+                    `
+                },
+                laser_ablation: {
+                    title: "Laser Ablation",
+                    description: "A powerful laser is focused on the asteroid's surface, heating it until the rock vaporizes. This creates a jet of gas, which acts like a small rocket engine, pushing the asteroid.",
+                     details: `
+                        <p class="mt-2"><strong>Concept Status:</strong> A promising future technology currently in the conceptual and laboratory testing phase.</p>
+                        <ul>
+                            <li><strong>Pros:</strong> No physical contact required; thrust can be adjusted by varying laser power.</li>
+                            <li><strong>Cons:</strong> Requires an immense power source; less effective on rapidly rotating asteroids.</li>
+                        </ul>
+                    `
+                }
+            };
 
             function switchMode(newMode) {
                 appState.mode = newMode;
@@ -304,6 +332,7 @@
                     setControlsEnabled(false);
                 }
                 updateUI();
+                updateMitigationBriefing(); // Update briefing on mode switch
             }
 
             function setControlsEnabled(isEnabled) {
@@ -313,60 +342,44 @@
                 dom.loadNasaDataBtn.disabled = !isEnabled;
             }
 
-            async function callGemini(systemPrompt, userQuery, isFollowUp = false) {
-                dom.modalTitle.textContent = "AI Analyst Response";
-                dom.geminiModal.classList.remove('hidden');
-                dom.followUpContainer.classList.add('hidden');
+            function generateImpactBriefing() {
+                const { diameter, velocity, location, impactEnergy } = appState;
+                const { crater, seismic } = calculateConsequences();
 
-                if (isFollowUp) {
-                    dom.modalContent.innerHTML += `<div class="mt-4 p-2 bg-gray-700 rounded-lg"><b>You:</b> ${userQuery}</div>`;
-                    appState.geminiConversationHistory.push({ role: "user", parts: [{ text: userQuery }] });
-                } else {
-                    dom.modalContent.innerHTML = '<p>Generating response...</p>';
-                    appState.geminiConversationHistory = [{ role: "user", parts: [{ text: userQuery }] }];
+                let environmentalDetail = '';
+                switch(location) {
+                    case 'inland': environmentalDetail = 'The primary environmental concern is a powerful atmospheric shockwave and widespread ejecta, potentially triggering regional wildfires. Long-term climate effects from dust injection are possible but depend on impact angle and geology.'; break;
+                    case 'coastal': environmentalDetail = 'A significant tsunami is the most severe threat, capable of inundating low-lying coastal regions hundreds of kilometers from the impact site. The combination of seismic shock and water displacement presents a complex disaster scenario.'; break;
+                    case 'oceanic': environmentalDetail = 'A deep-ocean impact will generate a mega-tsunami with potential for trans-oceanic devastation. While the initial atmospheric disturbance is lessened by the water, the subsequent wave energy is a threat to all surrounding coastlines.'; break;
                 }
-                
-                const payload = {
-                    contents: appState.geminiConversationHistory,
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                };
 
-                try {
-                    const response = await fetch(GEMINI_API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-                    const result = await response.json();
-                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                    
-                    if (text) {
-                        const formattedText = text.replace(/\n/g, '<br>');
-                        if (isFollowUp) {
-                           dom.modalContent.innerHTML += `<div class="mt-2"><b>Analyst:</b> ${formattedText}</div>`;
-                        } else {
-                           dom.modalContent.innerHTML = `<div"><b>Analyst:</b> ${formattedText}</div>`;
-                        }
-                        appState.geminiConversationHistory.push({ role: "model", parts: [{ text: text }] });
-                        dom.followUpContainer.classList.remove('hidden');
-                    } else {
-                        dom.modalContent.innerHTML += '<p class="text-red-400">Could not generate a response.</p>';
-                    }
-                } catch (error) {
-                    console.error('Gemini API call failed:', error);
-                    dom.modalContent.innerHTML += `<p class="text-red-400">An error occurred. Please check the console.</p>`;
-                }
-                 dom.modalContent.scrollTop = dom.modalContent.scrollHeight;
+                const briefingHTML = `
+                    <h3>Threat Summary</h3>
+                    <p>Analysis of a simulated impact event involving a Near-Earth Object (NEO) with a diameter of <strong>${diameter} m</strong> and an impact velocity of <strong>${velocity} km/s</strong>.</p>
+                    <h3>Calculated Consequences</h3>
+                    <ul>
+                        <li><strong>Impact Energy:</strong> ${Number(impactEnergy).toLocaleString()} Megatons (MT) of TNT equivalent.</li>
+                        <li><strong>Estimated Crater Diameter:</strong> ${Number(crater).toLocaleString()} km.</li>
+                        <li><strong>Equivalent Seismic Magnitude:</strong> ${seismic} on the Richter scale.</li>
+                    </ul>
+                    <h3>Environmental Impact Analysis</h3>
+                    <p>The impact is projected to occur in a/an <strong>${location}</strong> region. ${environmentalDetail}</p>
+                    <h3>Scale Comparison</h3>
+                    <p>The energy released is approximately <strong>${(impactEnergy / 15).toFixed(1)} times</strong> more powerful than the 1908 Tunguska event, which flattened over 2,000 square kilometers of forest.</p>
+                `;
+
+                dom.modalContent.innerHTML = briefingHTML;
+                dom.briefingModal.classList.remove('hidden');
+                soundEngine.playClick();
             }
 
             function calculateConsequences() {
                 if (appState.mitigation !== 'none') {
                     appState.impactEnergy = 0;
-                    dom.generateReportBtn.disabled = true;
+                    dom.generateBriefingBtn.disabled = true;
                     return { energy: 0, crater: 0, seismic: 0 };
                 }
-                dom.generateReportBtn.disabled = false;
+                dom.generateBriefingBtn.disabled = false;
                 const radius = appState.diameter / 2;
                 const volume = (4/3) * Math.PI * Math.pow(radius, 3);
                 const mass = volume * ASTEROID_DENSITY;
@@ -379,7 +392,7 @@
                 return {
                     energy: energyMegatons.toFixed(2),
                     crater: craterDiameterKm.toFixed(2),
-                    seismic: seismicMagnitude > 0 ? seismicMagnitude.toFixed(1) : 0,
+                    seismic: seismicMagnitude > 0 ? seismicMagnitude.toFixed(1) : "0.0",
                 };
             }
 
@@ -441,8 +454,22 @@
                 drawTrajectory();
                 updateChart();
             }
+
+            // MODIFIED: updateMitigationBriefing
+            function updateMitigationBriefing() {
+                const selectedStrategy = appState.mitigation;
+                const briefingData = mitigationBriefings[selectedStrategy];
+
+                if (briefingData) {
+                    dom.mitigationTitle.textContent = briefingData.title;
+                    dom.mitigationDescription.textContent = briefingData.description;
+                    dom.mitigationDetails.innerHTML = briefingData.details;
+                    dom.mitigationBriefingContainer.classList.add('visible');
+                } else {
+                    dom.mitigationBriefingContainer.classList.remove('visible');
+                }
+            }
             
-            // --- Drawing and Visualization ---
             function drawTrajectory() {
                 const w = dom.trajectoryCanvas.width = dom.trajectoryCanvas.clientWidth;
                 const h = dom.trajectoryCanvas.height = dom.trajectoryCanvas.clientHeight;
@@ -485,7 +512,6 @@
                 }
             }
             
-            // Simplified world path (for drawing)
             const worldPath = new Path2D("M8,80 L20,70 L45,60 L70,62 L90,75 L110,80 L130,80 L150,70 L170,55 L180,45 L190,30 L220,25 L240,28 L260,35 L280,45 L290,60 L280,75 L270,90 L260,105 L240,115 L220,120 L200,118 L180,115 L160,110 L140,112 L120,120 L100,125 L80,120 L60,110 L40,95 L20,85 Z M20,10 L40,5 L60,8 L70,15 L60,25 L50,30 L40,25 Z M285,15 L300,10 L310,15 L315,25 L305,30 L295,25 Z");
 
             function drawWorldMap() {
@@ -494,9 +520,9 @@
                 offscreenMapCanvas.width = w;
                 offscreenMapCanvas.height = h;
 
-                m_ctx.fillStyle = '#0c4a6e'; // Dark blue ocean
+                m_ctx.fillStyle = '#0c4a6e';
                 m_ctx.fillRect(0, 0, w, h);
-                offscreen_m_ctx.fillStyle = '#0000FF'; // Blue for water
+                offscreen_m_ctx.fillStyle = '#0000FF';
                 offscreen_m_ctx.fillRect(0, 0, w, h);
 
                 m_ctx.save();
@@ -505,8 +531,8 @@
                 const scaleY = h / 140;
                 m_ctx.scale(scaleX, scaleY);
                 offscreen_m_ctx.scale(scaleX, scaleY);
-                m_ctx.fillStyle = '#166534'; // Dark green land
-                offscreen_m_ctx.fillStyle = '#00FF00'; // Green for land
+                m_ctx.fillStyle = '#166534';
+                offscreen_m_ctx.fillStyle = '#00FF00';
                 m_ctx.fill(worldPath);
                 offscreen_m_ctx.fill(worldPath);
                 m_ctx.restore();
@@ -515,14 +541,13 @@
 
             function getImpactLocation(x, y) {
                 const pixel = offscreen_m_ctx.getImageData(x, y, 1, 1).data;
-                const isLand = pixel[1] === 255; // Check green channel
-                // Simplified coastal check
+                const isLand = pixel[1] === 255;
                 if (isLand) {
                     for(let i = -3; i <= 3; i++) {
                         for(let j = -3; j <= 3; j++) {
                             if (i === 0 && j === 0) continue;
                             const adjacentPixel = offscreen_m_ctx.getImageData(x + i, y + j, 1, 1).data;
-                            if (adjacentPixel[2] === 255) return 'coastal'; // Is water nearby?
+                            if (adjacentPixel[2] === 255) return 'coastal';
                         }
                     }
                     return 'inland';
@@ -604,11 +629,13 @@
             dom.modeChallengeBtn.addEventListener('click', () => switchMode('challenge'));
             dom.sizeSlider.addEventListener('input', (e) => { appState.diameter = parseInt(e.target.value); updateUI(); });
             dom.velocitySlider.addEventListener('input', (e) => { appState.velocity = parseInt(e.target.value); updateUI(); });
+            // MODIFIED: Event listener for mitigation dropdown
             dom.mitigationSelect.addEventListener('change', (e) => {
                 appState.mitigation = e.target.value;
                 soundEngine.playClick();
                 if (appState.mitigation !== 'none') { soundEngine.playSuccess(); }
                 updateUI();
+                updateMitigationBriefing(); // Call the new function
             });
             dom.mapCanvas.addEventListener('click', (e) => {
                 if (appState.mode === 'challenge') return;
@@ -629,29 +656,8 @@
                     updateUI();
                 }
             });
-            dom.generateReportBtn.addEventListener('click', () => {
-                soundEngine.playClick();
-                const { diameter, velocity, location, impactEnergy } = appState;
-                const systemPrompt = "You are a senior planetary defense analyst. Write a clear, concise impact report for policymakers. Be factual and avoid sensationalism. Keep it under 200 words.";
-                const userQuery = `Generate a report for this impact: Diameter: ${diameter}m, Velocity: ${velocity}km/s, Location: ${location}, Energy: ${impactEnergy.toFixed(2)} Megatons. Detail immediate effects, environmental consequences, and provide a scale comparison.`;
-                callGemini(systemPrompt, userQuery);
-            });
-            dom.brainstormBtn.addEventListener('click', () => {
-                soundEngine.playClick();
-                const systemPrompt = "You are a creative aerospace engineer brainstorming innovative asteroid mitigation strategies.";
-                const userQuery = `For a ${appState.diameter}m asteroid at ${appState.velocity}km/s, suggest three distinct, advanced mitigation strategies beyond the standard ones. For each, give a one-sentence description and a note on its feasibility.`;
-                callGemini(systemPrompt, userQuery);
-            });
-            dom.sendFollowUpBtn.addEventListener('click', () => {
-                const query = dom.followUpInput.value;
-                if(query) {
-                    soundEngine.playClick();
-                    callGemini("You are a helpful planetary defense analyst.", query, true);
-                    dom.followUpInput.value = '';
-                }
-            });
-            dom.followUpInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') dom.sendFollowUpBtn.click(); });
-            dom.closeModalBtn.addEventListener('click', () => dom.geminiModal.classList.add('hidden'));
+            dom.generateBriefingBtn.addEventListener('click', generateImpactBriefing);
+            dom.closeModalBtn.addEventListener('click', () => dom.briefingModal.classList.add('hidden'));
             dom.shareReportCardBtn.addEventListener('click', showReportCard);
             dom.closeReportCardBtn.addEventListener('click', () => dom.reportCardModal.classList.add('hidden'));
             dom.copyReportCardBtn.addEventListener('click', () => {
