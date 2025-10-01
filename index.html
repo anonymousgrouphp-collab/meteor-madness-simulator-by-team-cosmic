@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteor Madness - Advanced Impact Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cosmic Neutrals -->
+    <!-- Application Structure Plan: The application is designed as an interactive, task-oriented dashboard with two primary modes: a creative 'Sandbox' and a goal-oriented 'Challenge Mode'. This dual-mode structure caters to different user motivations—free exploration vs. problem-solving. The core user flow remains centered on the control panel, a central visualizer, and a consequence analysis section. New features like the interactive global map and live NASA data loading are integrated directly into the control flow to enhance realism and user agency. The addition of conversational AI and a shareable report card transforms the tool from a simple simulator into a complete educational and collaborative platform. This structure was chosen to maximize user engagement, educational depth, and direct interaction with real-world scientific concepts. -->
+    <!-- Visualization & Content Choices: 
+        - Live NASA Data: Report Info -> Goal: Inform/Organize -> Viz: Interactive List -> Interaction: Click to load -> Justification: Directly connects the simulation to real, timely scientific data, fulfilling a core challenge requirement.
+        - Global Impact Map: Report Info -> Goal: Organize/Inform -> Viz: 2D Canvas Map -> Interaction: Click to select impact point -> Justification: Dramatically increases user immersion and provides a clear geographical context for the impact, making the threat feel more tangible.
+        - Advanced Mitigation: Report Info -> Goal: Compare/Change -> Viz: Dropdown Menu -> Interaction: Select strategy -> Justification: Expands the user's problem-solving toolkit and introduces them to a wider range of scientific concepts for planetary defense.
+        - Shareable Report Card: Report Info -> Goal: Synthesize/Inform -> Viz: Formatted Modal -> Interaction: Copy to clipboard -> Justification: Encourages social sharing and outreach, allowing users to easily communicate their simulation results and learnings.
+        - Conversational AI: Report Info -> Goal: Inform/Explore -> Viz: Chat Interface -> Interaction: Follow-up questions -> Justification: Creates a powerful, open-ended learning tool where users can explore their own curiosity in depth with an AI analyst.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; max-height: 400px; }
+        .slider-thumb-orange::-webkit-slider-thumb { background-color: #f97316; }
+        .slider-thumb-orange::-moz-range-thumb { background-color: #f97316; }
+        .gemini-button { transition: all 0.2s ease-in-out; }
+        .gemini-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
+        .prose h3 { color: #fb923c; margin-bottom: 0.5rem; }
+        .prose ul { list-style-position: inside; padding-left: 0; }
+        .prose li, .prose p { margin-bottom: 0.75rem; }
+        .mode-button.active { background-color: #ea580c; color: white; }
+        .nasa-item:hover { background-color: #3f3f46; }
+        /* Accessibility Focus Styles */
+        button:focus, select:focus, input[type=range]:focus, input[type=checkbox]:focus {
+            outline: 2px solid #fb923c;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 antialiased">
+
+    <div id="audio-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[100]">
+        <div class="text-center p-8">
+            <h2 class="text-3xl font-bold mb-4 text-white">Enable Audio?</h2>
+            <p class="text-gray-300 mb-6">This experience uses sound effects for better immersion.</p>
+            <button id="enable-audio" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg text-lg">Yes, enable audio</button>
+        </div>
+    </div>
+
+    <div id="app" class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tighter">Meteor Madness</h1>
+            <p class="text-lg md:text-xl text-gray-400 mt-2">Advanced Asteroid Impact & Mitigation Simulator</p>
+        </header>
+
+        <main>
+            <section id="scenario" class="bg-gray-800 p-6 rounded-2xl mb-8 md:mb-12 shadow-2xl border border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="scenario-title" class="text-2xl font-bold text-orange-400">Sandbox Mode</h2>
+                    <div class="flex space-x-2 bg-gray-700 p-1 rounded-lg">
+                        <button id="mode-sandbox" class="mode-button active px-4 py-1 text-sm font-semibold rounded-md" aria-label="Switch to Sandbox Mode">Sandbox</button>
+                        <button id="mode-challenge" class="mode-button px-4 py-1 text-sm font-semibold rounded-md text-gray-300" aria-label="Switch to Challenge Mode">Challenge</button>
+                    </div>
+                </div>
+                <p id="scenario-description" class="text-gray-300">Explore freely in Sandbox mode. Adjust all parameters to simulate any scenario you can imagine. Or, switch to Challenge Mode for a specific mission.</p>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div id="controls" class="lg:col-span-1 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 space-y-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Load Data</h3>
+                        <button id="load-nasa-data" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg" aria-label="Load real asteroid data from NASA">Load Real Asteroids (Next 7 Days)</button>
+                        <div id="nasa-data-container" class="mt-4 max-h-40 overflow-y-auto hidden">
+                            <ul id="nasa-data-list" class="text-sm space-y-1"></ul>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Impact Parameters</h3>
+                        <div>
+                            <label for="asteroid-size" class="block text-sm font-medium text-gray-300">Asteroid Diameter (meters)</label>
+                            <input id="asteroid-size" type="range" min="10" max="1000" value="140" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb-orange" aria-label="Adjust asteroid diameter">
+                            <span id="size-value" class="text-orange-400 font-mono text-center block mt-2">140 m</span>
+                        </div>
+                        <div class="mt-4">
+                            <label for="asteroid-velocity" class="block text-sm font-medium text-gray-300">Impact Velocity (km/s)</label>
+                            <input id="asteroid-velocity" type="range" min="10" max="70" value="20" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb-orange" aria-label="Adjust asteroid velocity">
+                            <span id="velocity-value" class="text-orange-400 font-mono text-center block mt-2">20 km/s</span>
+                        </div>
+                    </div>
+
+                     <div>
+                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Impact Location</h3>
+                         <canvas id="map-canvas" class="w-full h-48 rounded-lg bg-blue-900/50 cursor-pointer border-2 border-transparent hover:border-orange-500" aria-label="Interactive world map. Click to set impact location."></canvas>
+                         <p class="text-center text-sm text-gray-400 mt-2">Click map to set target. Current: <span id="location-value" class="font-bold text-orange-400">Inland</span></p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Mitigation Systems</h3>
+                        <div>
+                           <label for="mitigation-strategy" class="block text-sm font-medium text-gray-300">Select Strategy</label>
+                           <select id="mitigation-strategy" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1" aria-label="Select a mitigation strategy">
+                               <option value="none">None (No Action)</option>
+                               <option value="kinetic_impactor">Kinetic Impactor</option>
+                               <option value="gravity_tractor">Gravity Tractor</option>
+                               <option value="laser_ablation">Laser Ablation</option>
+                           </select>
+                       </div>
+                       <p id="mitigation-status" class="text-sm mt-2 text-gray-400">No mitigation strategy selected.</p>
+                       <div class="mt-4">
+                           <button id="brainstorm-mitigation" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg gemini-button" aria-label="Brainstorm more mitigation plans with AI">✨ Brainstorm More Plans</button>
+                       </div>
+                    </div>
+                </div>
+
+                <div id="visuals-analysis" class="lg:col-span-2 space-y-8">
+                    <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700">
+                        <h3 class="text-xl font-bold text-white mb-4">Trajectory & Impact Visualizer</h3>
+                         <canvas id="trajectory-canvas" class="w-full h-64 md:h-80 rounded-lg bg-black"></canvas>
+                         <p id="impact-status" class="text-center mt-4 text-lg font-medium text-red-400">IMPACT IMMINENT</p>
+                    </div>
+
+                    <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-white mb-4">Consequence Analysis</h3>
+                            <button id="share-report-card" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded-lg text-sm" aria-label="Share impact report card">Share Report</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="text-center bg-gray-900/50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-400">Impact Energy</p>
+                                <p id="energy-value" class="text-2xl font-bold text-orange-400">0 MT</p>
+                            </div>
+                             <div class="text-center bg-gray-900/50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-400">Crater Diameter</p>
+                                <p id="crater-value" class="text-2xl font-bold text-orange-400">0 km</p>
+                            </div>
+                             <div class="text-center bg-gray-900/50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-400">Seismic Magnitude</p>
+                                <p id="seismic-value" class="text-2xl font-bold text-orange-400">0.0</p>
+                            </div>
+                             <div class="text-center bg-gray-900/50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-400">Primary Hazard</p>
+                                <p id="hazard-value" class="text-2xl font-bold text-orange-400">---</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                             <button id="generate-report" class="w-full bg-orange-600 text-white font-bold py-2 px-4 rounded-lg mb-4 gemini-button" aria-label="Generate a detailed impact report with AI" disabled>✨ Ask an AI Analyst for a Detailed Report</button>
+                             <div class="chart-container">
+                                <canvas id="energy-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-8 md:mt-12 text-gray-500 text-sm">
+            <p>A project for the 2025 NASA Space Apps Challenge. Inspired by data from NASA's NEO API and USGS environmental datasets. Enhanced with Google Gemini.</p>
+            <p>Project by Team Cosmic 🚀</p>
+            <p>&copy; 2025 Meteor Madness Simulator</p>
+        </footer>
+    </div>
+    
+    <!-- Modals -->
+    <div id="gemini-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-gray-700">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 id="modal-title" class="text-xl font-bold text-orange-400">AI Analyst Response</h3>
+                <button id="close-modal" class="text-gray-400 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
+            </div>
+            <div id="modal-content" class="p-6 overflow-y-auto flex-grow prose text-gray-300"></div>
+            <div id="follow-up-container" class="p-4 border-t border-gray-700 hidden">
+                <div class="flex space-x-2">
+                    <input type="text" id="follow-up-input" placeholder="Ask a follow-up question..." class="flex-grow bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <button id="send-follow-up" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg" aria-label="Send follow-up question">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="report-card-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700">
+             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-orange-400">Impact Report Card</h3>
+                <button id="close-report-card" class="text-gray-400 hover:text-white text-2xl" aria-label="Close report card">&times;</button>
+            </div>
+            <div id="report-card-content" class="p-6 text-gray-300 space-y-3"></div>
+            <div class="p-4 border-t border-gray-700">
+                <button id="copy-report-card" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg" aria-label="Copy report card to clipboard">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+    
+    <textarea id="clipboard-helper" class="absolute -left-full"></textarea>
+
+    <script type="module">
+        // --- Main Application Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // State management object
+            const appState = {
+                mode: 'sandbox', // 'sandbox' or 'challenge'
+                diameter: 140,
+                velocity: 20,
+                location: 'inland',
+                mitigation: 'none',
+                impactEnergy: 0,
+                isAudioEnabled: false,
+                geminiConversationHistory: [],
+            };
+
+            // --- DOM Element Cache ---
+            const dom = {
+                // Modals
+                audioModal: document.getElementById('audio-modal'),
+                enableAudioBtn: document.getElementById('enable-audio'),
+                geminiModal: document.getElementById('gemini-modal'),
+                modalTitle: document.getElementById('modal-title'),
+                modalContent: document.getElementById('modal-content'),
+                closeModalBtn: document.getElementById('close-modal'),
+                followUpContainer: document.getElementById('follow-up-container'),
+                followUpInput: document.getElementById('follow-up-input'),
+                sendFollowUpBtn: document.getElementById('send-follow-up'),
+                reportCardModal: document.getElementById('report-card-modal'),
+                reportCardContent: document.getElementById('report-card-content'),
+                closeReportCardBtn: document.getElementById('close-report-card'),
+                copyReportCardBtn: document.getElementById('copy-report-card'),
+                clipboardHelper: document.getElementById('clipboard-helper'),
+                // Mode Selection
+                modeSandboxBtn: document.getElementById('mode-sandbox'),
+                modeChallengeBtn: document.getElementById('mode-challenge'),
+                scenarioTitle: document.getElementById('scenario-title'),
+                scenarioDescription: document.getElementById('scenario-description'),
+                // Controls
+                loadNasaDataBtn: document.getElementById('load-nasa-data'),
+                nasaDataContainer: document.getElementById('nasa-data-container'),
+                nasaDataList: document.getElementById('nasa-data-list'),
+                sizeSlider: document.getElementById('asteroid-size'),
+                velocitySlider: document.getElementById('asteroid-velocity'),
+                sizeValue: document.getElementById('size-value'),
+                velocityValue: document.getElementById('velocity-value'),
+                locationValue: document.getElementById('location-value'),
+                mitigationSelect: document.getElementById('mitigation-strategy'),
+                mitigationStatus: document.getElementById('mitigation-status'),
+                brainstormBtn: document.getElementById('brainstorm-mitigation'),
+                // Visuals & Analysis
+                impactStatus: document.getElementById('impact-status'),
+                energyValue: document.getElementById('energy-value'),
+                craterValue: document.getElementById('crater-value'),
+                seismicValue: document.getElementById('seismic-value'),
+                hazardValue: document.getElementById('hazard-value'),
+                generateReportBtn: document.getElementById('generate-report'),
+                shareReportCardBtn: document.getElementById('share-report-card'),
+                // Canvases
+                trajectoryCanvas: document.getElementById('trajectory-canvas'),
+                mapCanvas: document.getElementById('map-canvas'),
+                energyChartCanvas: document.getElementById('energy-chart'),
+            };
+
+            // --- Canvas & Chart Contexts ---
+            const t_ctx = dom.trajectoryCanvas.getContext('2d');
+            const m_ctx = dom.mapCanvas.getContext('2d');
+            const offscreenMapCanvas = document.createElement('canvas');
+            const offscreen_m_ctx = offscreenMapCanvas.getContext('2d');
+            let energyChart;
+            
+            // --- Constants ---
+            const ASTEROID_DENSITY = 3000;
+            const API_KEY = "";
+            const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const NASA_API_KEY = 'DEMO_KEY'; 
+
+            // --- Sound Engine (Tone.js) ---
+            const soundEngine = {
+                uiClick: new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.0, release: 0.1 } }).toDestination(),
+                success: new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 } }).toDestination(),
+                impact: new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.1 } }).toDestination(),
+                playClick() { if(appState.isAudioEnabled) this.uiClick.triggerAttackRelease('C5', '8n'); },
+                playSuccess() { if(appState.isAudioEnabled) this.success.triggerAttackRelease('G5', '4n'); },
+                playImpact() { if(appState.isAudioEnabled) this.impact.triggerAttackRelease('1n'); },
+            };
+
+            // --- Core Functions ---
+
+            function switchMode(newMode) {
+                appState.mode = newMode;
+                soundEngine.playClick();
+                if (newMode === 'sandbox') {
+                    dom.modeSandboxBtn.classList.add('active');
+                    dom.modeChallengeBtn.classList.remove('active');
+                    dom.scenarioTitle.textContent = "Sandbox Mode";
+                    dom.scenarioDescription.textContent = "Explore freely in Sandbox mode. Adjust all parameters to simulate any scenario you can imagine. Or, switch to Challenge Mode for a specific mission.";
+                    setControlsEnabled(true);
+                } else {
+                    dom.modeSandboxBtn.classList.remove('active');
+                    dom.modeChallengeBtn.classList.add('active');
+                    dom.scenarioTitle.textContent = "Challenge: The City-Killer";
+                    dom.scenarioDescription.textContent = "A 300m asteroid is on a direct collision course with a major coastal city! Velocity is 25 km/s. You must select and deploy a mitigation strategy to save the population. The fate of millions is in your hands.";
+                    appState.diameter = 300;
+                    appState.velocity = 25;
+                    appState.location = 'coastal';
+                    appState.mitigation = 'none';
+                    setControlsEnabled(false);
+                }
+                updateUI();
+            }
+
+            function setControlsEnabled(isEnabled) {
+                dom.sizeSlider.disabled = !isEnabled;
+                dom.velocitySlider.disabled = !isEnabled;
+                dom.mapCanvas.style.pointerEvents = isEnabled ? 'auto' : 'none';
+                dom.loadNasaDataBtn.disabled = !isEnabled;
+            }
+
+            async function callGemini(systemPrompt, userQuery, isFollowUp = false) {
+                dom.modalTitle.textContent = "AI Analyst Response";
+                dom.geminiModal.classList.remove('hidden');
+                dom.followUpContainer.classList.add('hidden');
+
+                if (isFollowUp) {
+                    dom.modalContent.innerHTML += `<div class="mt-4 p-2 bg-gray-700 rounded-lg"><b>You:</b> ${userQuery}</div>`;
+                    appState.geminiConversationHistory.push({ role: "user", parts: [{ text: userQuery }] });
+                } else {
+                    dom.modalContent.innerHTML = '<p>Generating response...</p>';
+                    appState.geminiConversationHistory = [{ role: "user", parts: [{ text: userQuery }] }];
+                }
+                
+                const payload = {
+                    contents: appState.geminiConversationHistory,
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                };
+
+                try {
+                    const response = await fetch(GEMINI_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`API error: ${response.statusText}`);
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (text) {
+                        const formattedText = text.replace(/\n/g, '<br>');
+                        if (isFollowUp) {
+                           dom.modalContent.innerHTML += `<div class="mt-2"><b>Analyst:</b> ${formattedText}</div>`;
+                        } else {
+                           dom.modalContent.innerHTML = `<div"><b>Analyst:</b> ${formattedText}</div>`;
+                        }
+                        appState.geminiConversationHistory.push({ role: "model", parts: [{ text: text }] });
+                        dom.followUpContainer.classList.remove('hidden');
+                    } else {
+                        dom.modalContent.innerHTML += '<p class="text-red-400">Could not generate a response.</p>';
+                    }
+                } catch (error) {
+                    console.error('Gemini API call failed:', error);
+                    dom.modalContent.innerHTML += `<p class="text-red-400">An error occurred. Please check the console.</p>`;
+                }
+                 dom.modalContent.scrollTop = dom.modalContent.scrollHeight;
+            }
+
+            function calculateConsequences() {
+                if (appState.mitigation !== 'none') {
+                    appState.impactEnergy = 0;
+                    dom.generateReportBtn.disabled = true;
+                    return { energy: 0, crater: 0, seismic: 0 };
+                }
+                dom.generateReportBtn.disabled = false;
+                const radius = appState.diameter / 2;
+                const volume = (4/3) * Math.PI * Math.pow(radius, 3);
+                const mass = volume * ASTEROID_DENSITY;
+                const velocityMetersPerSecond = appState.velocity * 1000;
+                const kineticEnergyJoules = 0.5 * mass * Math.pow(velocityMetersPerSecond, 2);
+                const energyMegatons = kineticEnergyJoules / (4.184 * Math.pow(10, 15));
+                appState.impactEnergy = energyMegatons;
+                const craterDiameterKm = 0.02 * Math.pow(kineticEnergyJoules, 1/3.4) / 1000;
+                const seismicMagnitude = 0.67 * (Math.log10(kineticEnergyJoules)) - 5.87;
+                return {
+                    energy: energyMegatons.toFixed(2),
+                    crater: craterDiameterKm.toFixed(2),
+                    seismic: seismicMagnitude > 0 ? seismicMagnitude.toFixed(1) : 0,
+                };
+            }
+
+            function updateUI() {
+                const { energy, crater, seismic } = calculateConsequences();
+
+                dom.sizeSlider.value = appState.diameter;
+                dom.velocitySlider.value = appState.velocity;
+                dom.sizeValue.textContent = `${appState.diameter} m`;
+                dom.velocityValue.textContent = `${appState.velocity} km/s`;
+                dom.locationValue.textContent = appState.location.charAt(0).toUpperCase() + appState.location.slice(1);
+                dom.mitigationSelect.value = appState.mitigation;
+                
+                const mitigationText = {
+                    none: 'No mitigation strategy selected.',
+                    kinetic_impactor: 'Kinetic Impactor armed. Awaiting deployment.',
+                    gravity_tractor: 'Gravity Tractor engaged. Slowly altering trajectory.',
+                    laser_ablation: 'Laser Ablation system online. Vaporizing surface to create thrust.'
+                };
+                dom.mitigationStatus.textContent = mitigationText[appState.mitigation];
+
+                if (appState.mitigation !== 'none') {
+                    dom.mitigationStatus.classList.remove('text-gray-400');
+                    dom.mitigationStatus.classList.add('text-green-400');
+                    dom.impactStatus.textContent = 'ASTEROID DEFLECTED';
+                    dom.impactStatus.classList.remove('text-red-400');
+                    dom.impactStatus.classList.add('text-green-400');
+                    dom.energyValue.textContent = '0 MT';
+                    dom.craterValue.textContent = '0 km';
+                    dom.seismicValue.textContent = '0.0';
+                    dom.hazardValue.textContent = 'None';
+                    if(appState.mode === 'challenge') {
+                        dom.scenarioDescription.textContent = "SUCCESS! The coastal city is safe. Your decisive action averted a catastrophe. You have proven that with science and quick thinking, humanity can defend itself from cosmic threats.";
+                        dom.scenarioDescription.classList.add('text-green-300');
+                    }
+                } else {
+                    dom.mitigationStatus.classList.add('text-gray-400');
+                    dom.mitigationStatus.classList.remove('text-green-400');
+                    dom.impactStatus.textContent = 'IMPACT IMMINENT';
+                    dom.impactStatus.classList.add('text-red-400');
+                    dom.impactStatus.classList.remove('text-green-400');
+                    dom.energyValue.textContent = `${Number(energy).toLocaleString()} MT`;
+                    dom.craterValue.textContent = `${Number(crater).toLocaleString()} km`;
+                    dom.seismicValue.textContent = `${seismic}`;
+                     if(appState.mode === 'challenge') {
+                         dom.scenarioDescription.textContent = "FAILURE! The asteroid has impacted the coastal city, causing untold devastation. A different strategy was needed. Reset the simulation by switching modes and try again.";
+                         dom.scenarioDescription.classList.add('text-red-400');
+                     } else {
+                         dom.scenarioDescription.classList.remove('text-red-400', 'text-green-300');
+                     }
+                }
+
+                switch(appState.location) {
+                    case 'inland': dom.hazardValue.textContent = 'Shockwave'; break;
+                    case 'coastal': dom.hazardValue.textContent = 'Tsunami'; break;
+                    case 'oceanic': dom.hazardValue.textContent = 'Mega-Tsunami'; break;
+                }
+                
+                drawTrajectory();
+                updateChart();
+            }
+            
+            // --- Drawing and Visualization ---
+            function drawTrajectory() {
+                const w = dom.trajectoryCanvas.width = dom.trajectoryCanvas.clientWidth;
+                const h = dom.trajectoryCanvas.height = dom.trajectoryCanvas.clientHeight;
+                t_ctx.clearRect(0, 0, w, h);
+                const earthRadius = Math.min(w, h) * 0.15;
+                const earthX = w * 0.75, earthY = h / 2;
+                t_ctx.fillStyle = '#3b82f6';
+                t_ctx.beginPath();
+                t_ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
+                t_ctx.fill();
+                const startX = -20, startY = h / 2;
+                
+                let controlY, endX, endY;
+                const mitigationEffect = { none: 0, kinetic_impactor: 1, gravity_tractor: 0.8, laser_ablation: 1.2 };
+                const deflection = mitigationEffect[appState.mitigation];
+
+                if (deflection > 0) {
+                    controlY = h * (0.1 / deflection);
+                    endY = earthY - earthRadius * (1.5 + deflection * 0.2);
+                    endX = earthX;
+                } else {
+                    controlY = h * 0.4;
+                    endX = earthX - earthRadius * 0.5;
+                    endY = earthY;
+                }
+
+                t_ctx.strokeStyle = '#f97316';
+                t_ctx.lineWidth = 2;
+                t_ctx.setLineDash([5, 5]);
+                t_ctx.beginPath();
+                t_ctx.moveTo(startX, startY);
+                t_ctx.quadraticCurveTo(w * 0.3, controlY, endX, endY);
+                t_ctx.stroke();
+                
+                if (deflection === 0) {
+                     t_ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                     t_ctx.beginPath();
+                     t_ctx.arc(endX, endY, 15, 0, Math.PI * 2);
+                     t_ctx.fill();
+                }
+            }
+            
+            // Simplified world path (for drawing)
+            const worldPath = new Path2D("M8,80 L20,70 L45,60 L70,62 L90,75 L110,80 L130,80 L150,70 L170,55 L180,45 L190,30 L220,25 L240,28 L260,35 L280,45 L290,60 L280,75 L270,90 L260,105 L240,115 L220,120 L200,118 L180,115 L160,110 L140,112 L120,120 L100,125 L80,120 L60,110 L40,95 L20,85 Z M20,10 L40,5 L60,8 L70,15 L60,25 L50,30 L40,25 Z M285,15 L300,10 L310,15 L315,25 L305,30 L295,25 Z");
+
+            function drawWorldMap() {
+                const w = dom.mapCanvas.width = dom.mapCanvas.clientWidth;
+                const h = dom.mapCanvas.height = dom.mapCanvas.clientHeight;
+                offscreenMapCanvas.width = w;
+                offscreenMapCanvas.height = h;
+
+                m_ctx.fillStyle = '#0c4a6e'; // Dark blue ocean
+                m_ctx.fillRect(0, 0, w, h);
+                offscreen_m_ctx.fillStyle = '#0000FF'; // Blue for water
+                offscreen_m_ctx.fillRect(0, 0, w, h);
+
+                m_ctx.save();
+                offscreen_m_ctx.save();
+                const scaleX = w / 320;
+                const scaleY = h / 140;
+                m_ctx.scale(scaleX, scaleY);
+                offscreen_m_ctx.scale(scaleX, scaleY);
+                m_ctx.fillStyle = '#166534'; // Dark green land
+                offscreen_m_ctx.fillStyle = '#00FF00'; // Green for land
+                m_ctx.fill(worldPath);
+                offscreen_m_ctx.fill(worldPath);
+                m_ctx.restore();
+                offscreen_m_ctx.restore();
+            }
+
+            function getImpactLocation(x, y) {
+                const pixel = offscreen_m_ctx.getImageData(x, y, 1, 1).data;
+                const isLand = pixel[1] === 255; // Check green channel
+                // Simplified coastal check
+                if (isLand) {
+                    for(let i = -3; i <= 3; i++) {
+                        for(let j = -3; j <= 3; j++) {
+                            if (i === 0 && j === 0) continue;
+                            const adjacentPixel = offscreen_m_ctx.getImageData(x + i, y + j, 1, 1).data;
+                            if (adjacentPixel[2] === 255) return 'coastal'; // Is water nearby?
+                        }
+                    }
+                    return 'inland';
+                }
+                return 'oceanic';
+            }
+
+            function createChart() {
+                energyChart = new Chart(dom.energyChartCanvas.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: ['Simulation', 'Tunguska (~15 MT)'], datasets: [{ data: [0, 15], backgroundColor: ['#f97316', '#3b82f6'] }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic', title: { display: true, text: 'Energy (Megatons TNT) - Log Scale', color: '#9ca3af' } } }, plugins: { legend: { display: false }, title: { display: true, text: 'Impact Energy Comparison', color: '#e5e7eb' } } }
+                });
+            }
+
+            function updateChart() {
+                energyChart.data.datasets[0].data[0] = appState.impactEnergy > 0 ? appState.impactEnergy : 0.01;
+                energyChart.update();
+            }
+
+            async function fetchNasaData() {
+                soundEngine.playClick();
+                dom.nasaDataList.innerHTML = `<li>Loading...</li>`;
+                dom.nasaDataContainer.classList.remove('hidden');
+                const today = new Date();
+                const endDate = new Date();
+                endDate.setDate(today.getDate() + 7);
+                const formatDate = (d) => d.toISOString().split('T')[0];
+                const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${formatDate(today)}&end_date=${formatDate(endDate)}&api_key=${NASA_API_KEY}`;
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    const asteroids = Object.values(data.near_earth_objects).flat();
+                    dom.nasaDataList.innerHTML = '';
+                    if (asteroids.length === 0) {
+                        dom.nasaDataList.innerHTML = `<li>No asteroids found in the next 7 days.</li>`;
+                        return;
+                    }
+                    asteroids.slice(0, 10).forEach(ast => {
+                        const li = document.createElement('li');
+                        li.className = 'p-2 rounded-md cursor-pointer nasa-item';
+                        li.textContent = `${ast.name}`;
+                        li.dataset.diameter = Math.round((ast.estimated_diameter.meters.estimated_diameter_min + ast.estimated_diameter.meters.estimated_diameter_max) / 2);
+                        li.dataset.velocity = Math.round(ast.close_approach_data[0].relative_velocity.kilometers_per_second);
+                        li.setAttribute('aria-label', `Load asteroid ${ast.name}`);
+                        li.setAttribute('tabindex', '0');
+                        dom.nasaDataList.appendChild(li);
+                    });
+                } catch (error) {
+                    console.error("Failed to fetch NASA data:", error);
+                    dom.nasaDataList.innerHTML = `<li>Error loading data.</li>`;
+                }
+            }
+            
+            function showReportCard() {
+                soundEngine.playClick();
+                const outcome = appState.mitigation !== 'none' ? 'SUCCESS: THREAT AVERTED' : 'FAILURE: CATASTROPHIC IMPACT';
+                const color = outcome.startsWith('SUCCESS') ? 'text-green-400' : 'text-red-400';
+                dom.reportCardContent.innerHTML = `
+                    <p class="text-xl font-bold ${color}">${outcome}</p>
+                    <p><strong>Asteroid Size:</strong> ${appState.diameter} m</p>
+                    <p><strong>Impact Velocity:</strong> ${appState.velocity} km/s</p>
+                    <p><strong>Target:</strong> ${appState.location.charAt(0).toUpperCase() + appState.location.slice(1)}</p>
+                    <p><strong>Mitigation Used:</strong> ${appState.mitigation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                    <p><strong>Resulting Energy:</strong> ${Number(calculateConsequences().energy).toLocaleString()} MT</p>
+                `;
+                dom.reportCardModal.classList.remove('hidden');
+            }
+
+            // --- Event Listeners ---
+            dom.enableAudioBtn.addEventListener('click', () => {
+                Tone.start();
+                appState.isAudioEnabled = true;
+                dom.audioModal.style.display = 'none';
+                soundEngine.playSuccess();
+            });
+            dom.modeSandboxBtn.addEventListener('click', () => switchMode('sandbox'));
+            dom.modeChallengeBtn.addEventListener('click', () => switchMode('challenge'));
+            dom.sizeSlider.addEventListener('input', (e) => { appState.diameter = parseInt(e.target.value); updateUI(); });
+            dom.velocitySlider.addEventListener('input', (e) => { appState.velocity = parseInt(e.target.value); updateUI(); });
+            dom.mitigationSelect.addEventListener('change', (e) => {
+                appState.mitigation = e.target.value;
+                soundEngine.playClick();
+                if (appState.mitigation !== 'none') { soundEngine.playSuccess(); }
+                updateUI();
+            });
+            dom.mapCanvas.addEventListener('click', (e) => {
+                if (appState.mode === 'challenge') return;
+                const rect = dom.mapCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                appState.location = getImpactLocation(x, y);
+                soundEngine.playClick();
+                updateUI();
+            });
+            dom.loadNasaDataBtn.addEventListener('click', fetchNasaData);
+            dom.nasaDataList.addEventListener('click', (e) => {
+                if (e.target.tagName === 'LI' && e.target.dataset.diameter) {
+                    appState.diameter = parseInt(e.target.dataset.diameter);
+                    appState.velocity = parseInt(e.target.dataset.velocity);
+                    soundEngine.playClick();
+                    dom.nasaDataContainer.classList.add('hidden');
+                    updateUI();
+                }
+            });
+            dom.generateReportBtn.addEventListener('click', () => {
+                soundEngine.playClick();
+                const { diameter, velocity, location, impactEnergy } = appState;
+                const systemPrompt = "You are a senior planetary defense analyst. Write a clear, concise impact report for policymakers. Be factual and avoid sensationalism. Keep it under 200 words.";
+                const userQuery = `Generate a report for this impact: Diameter: ${diameter}m, Velocity: ${velocity}km/s, Location: ${location}, Energy: ${impactEnergy.toFixed(2)} Megatons. Detail immediate effects, environmental consequences, and provide a scale comparison.`;
+                callGemini(systemPrompt, userQuery);
+            });
+            dom.brainstormBtn.addEventListener('click', () => {
+                soundEngine.playClick();
+                const systemPrompt = "You are a creative aerospace engineer brainstorming innovative asteroid mitigation strategies.";
+                const userQuery = `For a ${appState.diameter}m asteroid at ${appState.velocity}km/s, suggest three distinct, advanced mitigation strategies beyond the standard ones. For each, give a one-sentence description and a note on its feasibility.`;
+                callGemini(systemPrompt, userQuery);
+            });
+            dom.sendFollowUpBtn.addEventListener('click', () => {
+                const query = dom.followUpInput.value;
+                if(query) {
+                    soundEngine.playClick();
+                    callGemini("You are a helpful planetary defense analyst.", query, true);
+                    dom.followUpInput.value = '';
+                }
+            });
+            dom.followUpInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') dom.sendFollowUpBtn.click(); });
+            dom.closeModalBtn.addEventListener('click', () => dom.geminiModal.classList.add('hidden'));
+            dom.shareReportCardBtn.addEventListener('click', showReportCard);
+            dom.closeReportCardBtn.addEventListener('click', () => dom.reportCardModal.classList.add('hidden'));
+            dom.copyReportCardBtn.addEventListener('click', () => {
+                const text = dom.reportCardContent.innerText;
+                dom.clipboardHelper.value = `☄️ Meteor Madness Simulation Report ☄️\n\n${text}`;
+                dom.clipboardHelper.select();
+                document.execCommand('copy');
+                soundEngine.playSuccess();
+            });
+            window.addEventListener('resize', () => {
+                drawTrajectory();
+                drawWorldMap();
+            });
+            
+            // --- Initialization ---
+            drawWorldMap();
+            createChart();
+            switchMode('sandbox');
+        });
+    </script>
+</body>
+</html>
+
