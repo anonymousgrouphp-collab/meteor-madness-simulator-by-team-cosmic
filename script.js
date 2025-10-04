@@ -47,10 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let map, impactMarker;
     let energyChart;
     const t_ctx = dom.trajectoryCanvas.getContext('2d');
-    const ASTEROID_DENSITY = 3000; // kg/m^3 for stony asteroids
+    const ASTEROID_DENSITY = 3000;
     const NASA_API_KEY = 'aORJuyPR46Rb3kIpjSZJPDtZEZtos9OTBPTAqt5i';
 
-    // Simplified grid to map lat/lng to geopolitical regions
     const GRID_COLS = 12;
     const GRID_ROWS = 6;
     const regionLookup = [
@@ -99,25 +98,28 @@ document.addEventListener('DOMContentLoaded', () => {
             details: `<p class="mt-2"><strong>Concept Status:</strong> A promising future technology.</p><ul><li><strong>Pros:</strong> No physical contact required.</li><li><strong>Cons:</strong> Requires an immense power source.</li></ul>`
         }
     };
+
+    // --- Animation State ---
+    let animationFrameId = null;
+    let meteor = { t: 0 }; // t is progress from 0 to 1
+    let trajectoryPath = {}; // to store path points for the animation
     
     function generateImpactBriefing() {
         soundEngine.playClick();
-        let briefingHTML = '';
-
-        if (appState.mitigation !== 'none') {
-            const strategyName = appState.mitigation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const { location, mitigation } = appState;
+        
+        let briefingHTML;
+        if (mitigation !== 'none') {
+            const mitigationData = mitigationBriefings[mitigation];
             briefingHTML = `
-                <h3>Threat Averted: Mitigation Success</h3>
-                <p>The selected mitigation strategy, <strong>${strategyName}</strong>, has successfully deflected the asteroid.</p>
-                <ul>
-                    <li><strong>Outcome:</strong> No impact.</li>
-                    <li><strong>Potential Threat:</strong> Asteroid with diameter ${appState.diameter}m and velocity ${appState.velocity}km/s.</li>
-                    <li><strong>Target Region Saved:</strong> ${appState.location.name}</li>
-                </ul>
-                <p class="text-green-400 font-bold">Planetary defense systems performed nominally. The threat to the planet has been neutralized.</p>
+                <h3>Threat Averted</h3>
+                <p>The <strong>${mitigationData.title}</strong> mitigation strategy was successfully deployed.</p>
+                <h3>Outcome Analysis</h3>
+                <p>The asteroid's trajectory was altered, preventing impact with Earth. This action successfully averted a potential catastrophe in the <strong>${location.name}</strong> region.</p>
+                <p class="text-green-400 font-bold mt-4">MISSION STATUS: SUCCESSFUL</p>
             `;
         } else {
-            const { location, impactEnergy } = appState;
+            const { impactEnergy } = appState;
             const { crater, seismic } = calculateConsequences();
             let environmentalDetail = '';
             switch(location.type) {
@@ -125,7 +127,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'coastal': environmentalDetail = 'A significant tsunami is the most severe threat, capable of inundating low-lying coastal regions.'; break;
                 case 'oceanic': environmentalDetail = 'A deep-ocean impact will generate a mega-tsunami with potential for trans-oceanic devastation.'; break;
             }
-            briefingHTML = `<h3>Threat Summary</h3><p>Analysis of a simulated impact event targeting the <strong>${location.name}</strong> region.</p><h3>Calculated Physical Consequences</h3><ul><li><strong>Impact Energy:</strong> ${Number(impactEnergy).toLocaleString()} Megatons (MT).</li><li><strong>Estimated Crater Diameter:</strong> ${Number(crater).toLocaleString()} km.</li><li><strong>Equivalent Seismic Magnitude:</strong> ${seismic}.</li></ul><h3>Environmental Impact Analysis</h3><p>${environmentalDetail}</p>`;
+            briefingHTML = `
+                <h3>Threat Summary</h3>
+                <p>Analysis of a simulated impact event targeting the <strong>${location.name}</strong> region.</p>
+                <h3>Calculated Physical Consequences</h3>
+                <ul>
+                    <li><strong>Impact Energy:</strong> ${Number(impactEnergy).toLocaleString()} Megatons (MT).</li>
+                    <li><strong>Estimated Crater Diameter:</strong> ${Number(crater).toLocaleString()} km.</li>
+                    <li><strong>Equivalent Seismic Magnitude:</strong> ${seismic}.</li>
+                </ul>
+                <h3>Environmental Impact Analysis</h3>
+                <p>${environmentalDetail}</p>
+                <p class="text-red-400 font-bold mt-4">MISSION STATUS: FAILURE</p>
+            `;
         }
         
         dom.modalContent.innerHTML = briefingHTML;
@@ -145,20 +159,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function drawTrajectory() {
+    function startTrajectoryAnimation() {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
+
         const w = dom.trajectoryCanvas.width = dom.trajectoryCanvas.clientWidth;
         const h = dom.trajectoryCanvas.height = dom.trajectoryCanvas.clientHeight;
-        t_ctx.clearRect(0, 0, w, h);
+        
         const earthRadius = Math.min(w, h) * 0.15;
         const earthX = w * 0.75, earthY = h / 2;
-        t_ctx.fillStyle = '#3b82f6';
-        t_ctx.beginPath();
-        t_ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
-        t_ctx.fill();
+        
         const startX = -20, startY = h / 2;
+        const controlX = w * 0.3;
         let controlY, endX, endY;
+
         const mitigationEffect = { none: 0, kinetic_impactor: 1, gravity_tractor: 0.8, laser_ablation: 1.2 };
         const deflection = mitigationEffect[appState.mitigation];
+
         if (deflection > 0) {
             controlY = h * (0.1 / deflection);
             endY = earthY - earthRadius * (1.5 + deflection * 0.2);
@@ -168,26 +186,80 @@ document.addEventListener('DOMContentLoaded', () => {
             endX = earthX - earthRadius * 0.5;
             endY = earthY;
         }
+
+        trajectoryPath = {
+            w, h, t_ctx,
+            earthRadius, earthX, earthY,
+            startX, startY, controlX, controlY, endX, endY,
+            isImpact: deflection === 0
+        };
+
+        meteor.t = 0;
+        animationLoop();
+    }
+
+    function animationLoop() {
+        meteor.t += 0.005; // Animation speed
+        if (meteor.t > 1) {
+            meteor.t = 0;
+            if (trajectoryPath.isImpact) soundEngine.playImpact();
+        }
+
+        const { w, h, t_ctx, earthRadius, earthX, earthY, startX, startY, controlX, controlY, endX, endY, isImpact } = trajectoryPath;
+        
+        t_ctx.clearRect(0, 0, w, h);
+        
+        // Draw Earth
+        t_ctx.fillStyle = '#3b82f6';
+        t_ctx.beginPath();
+        t_ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
+        t_ctx.fill();
+
+        // Draw trajectory path
         t_ctx.strokeStyle = '#f97316';
         t_ctx.lineWidth = 2;
         t_ctx.setLineDash([5, 5]);
         t_ctx.beginPath();
         t_ctx.moveTo(startX, startY);
-        t_ctx.quadraticCurveTo(w * 0.3, controlY, endX, endY);
+        t_ctx.quadraticCurveTo(controlX, controlY, endX, endY);
         t_ctx.stroke();
-        if (deflection === 0) {
-              t_ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-              t_ctx.beginPath();
-              t_ctx.arc(endX, endY, 15, 0, Math.PI * 2);
-              t_ctx.fill();
+        t_ctx.setLineDash([]); // Reset line dash
+
+        // Calculate meteor's current position on the curve
+        const t = meteor.t;
+        const invT = 1 - t;
+        const meteorX = Math.pow(invT, 2) * startX + 2 * invT * t * controlX + Math.pow(t, 2) * endX;
+        const meteorY = Math.pow(invT, 2) * startY + 2 * invT * t * controlY + Math.pow(t, 2) * endY;
+        
+        // Draw meteor
+        t_ctx.beginPath();
+        const grad = t_ctx.createRadialGradient(meteorX, meteorY, 1, meteorX, meteorY, 8);
+        grad.addColorStop(0, 'white');
+        grad.addColorStop(0.4, 'rgba(249, 115, 22, 1)');
+        grad.addColorStop(1, 'rgba(249, 115, 22, 0)');
+        t_ctx.fillStyle = grad;
+        t_ctx.arc(meteorX, meteorY, 8, 0, Math.PI * 2);
+        t_ctx.fill();
+
+        // Draw impact flash
+        if (isImpact && t > 0.99) {
+            const flashGrad = t_ctx.createRadialGradient(endX, endY, 5, endX, endY, 20);
+            flashGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+            flashGrad.addColorStop(1, 'rgba(255, 165, 0, 0)');
+            t_ctx.fillStyle = flashGrad;
+            t_ctx.beginPath();
+            t_ctx.arc(endX, endY, 20, 0, Math.PI * 2);
+            t_ctx.fill();
         }
+
+        animationFrameId = requestAnimationFrame(animationLoop);
     }
     
     function createChart() {
         energyChart = new Chart(dom.energyChartCanvas.getContext('2d'), {
             type: 'bar',
-            data: { labels: ['Simulation', 'Tunguska (~15 MT)'], datasets: [{ data: [0, 15], backgroundColor: ['#f97316', '#3b82f6'] }] },
-            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic', title: { display: true, text: 'Energy (Megatons TNT) - Log Scale', color: '#9ca3af' } } }, plugins: { legend: { display: false }, title: { display: true, text: 'Impact Energy Comparison', color: '#e5e7eb' } } }
+            data: { labels: ['Simulation', 'Tunguska (~15 MT)'], datasets: [{ data: [0, 15], backgroundColor: ['#f97316', '#3b82f6'], borderRadius: 4 }] },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic', title: { display: true, text: 'Energy (Megatons TNT) - Log Scale', color: '#9ca3af' }, grid: { color: 'rgba(156, 163, 175, 0.2)' }, ticks: { color: '#9ca3af' } }, y: { grid: { color: 'rgba(156, 163, 175, 0.2)' }, ticks: { color: '#9ca3af' } } }, plugins: { legend: { display: false }, title: { display: true, text: 'Impact Energy Comparison', color: '#e5e7eb', font: { size: 16 } } } }
         });
     }
 
@@ -202,15 +274,13 @@ document.addEventListener('DOMContentLoaded', () => {
         soundEngine.playClick();
         dom.nasaDataList.innerHTML = `<li>Loading...</li>`;
         dom.nasaDataContainer.classList.remove('hidden');
-        // Set a fixed date based on the simulation's context (Oct 4, 2025) for consistent results.
-        const today = new Date('2025-10-04T12:00:00Z');
-        const endDate = new Date(today);
-        endDate.setDate(today.getDate() + 7);
+        const today = new Date('2025-10-04');
+        const endDate = new Date('2025-10-11');
         const formatDate = (d) => d.toISOString().split('T')[0];
         const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${formatDate(today)}&end_date=${formatDate(endDate)}&api_key=${NASA_API_KEY}`;
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) throw new Error('Network response was not ok. NASA API limit may be reached.');
             const data = await response.json();
             const asteroids = Object.values(data.near_earth_objects).flat();
             dom.nasaDataList.innerHTML = '';
@@ -230,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error("Failed to fetch NASA data:", error);
-            dom.nasaDataList.innerHTML = `<li>Error loading data.</li>`;
+            dom.nasaDataList.innerHTML = `<li>Error loading data. Try again later.</li>`;
         }
     }
     
@@ -244,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initMap() {
-        map = L.map('map', { zoomControl: false }).setView([20, 0], 2);
+        map = L.map('map', { zoomControl: false, attributionControl: false }).setView([20, 0], 2);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap &copy; CARTO',
             maxZoom: 10,
@@ -255,7 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function onMapClick(e) {
         if(impactMarker) { map.removeLayer(impactMarker); }
-        impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: 50000 }).addTo(map);
+        const impactRadius = Math.max(20000, Math.min(appState.diameter * 1000, 500000));
+        impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: impactRadius }).addTo(map);
 
         const lat = e.latlng.lat;
         const lng = e.latlng.lng;
@@ -278,7 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateConsequences() {
-        dom.generateBriefingBtn.disabled = false;
         if (appState.mitigation !== 'none') {
             appState.impactEnergy = 0;
             return { energy: 0, socioImpact: 'NONE', crater: 0, seismic: '0.0' };
@@ -292,9 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const energyMegatons = kineticEnergyJoules / (4.184 * Math.pow(10, 15));
         appState.impactEnergy = energyMegatons;
         
-        // Simplified Holsapple-Schmidt scaling for crater size
         const craterDiameterKm = 0.02 * Math.pow(kineticEnergyJoules, 1/3.4) / 1000;
-        // Simplified seismic magnitude calculation
         const seismicMagnitude = 0.67 * (Math.log10(kineticEnergyJoules)) - 5.87;
 
         const geoData = regionData[appState.location.regionCode];
@@ -308,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (socioEconomicScore > 1) socioImpactLevel = 'MODERATE';
         else socioImpactLevel = 'LOW';
         
-        if(appState.location.type === 'oceanic') socioImpactLevel = 'LOW';
+        if(appState.location.type === 'oceanic' && socioEconomicScore < 15) socioImpactLevel = 'LOW';
 
         return {
             energy: energyMegatons.toFixed(2),
@@ -351,17 +419,17 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.mitigationStatus.classList.remove('text-gray-400');
             dom.mitigationStatus.classList.add('text-green-400');
             dom.impactStatus.textContent = 'ASTEROID DEFLECTED';
-            dom.impactStatus.classList.remove('text-red-400');
+            dom.impactStatus.classList.remove('text-red-400', 'animate-pulse');
             dom.impactStatus.classList.add('text-green-400');
         } else {
             dom.mitigationStatus.classList.add('text-gray-400');
             dom.mitigationStatus.classList.remove('text-green-400');
             dom.impactStatus.textContent = 'IMPACT IMMINENT';
-            dom.impactStatus.classList.add('text-red-400');
+            dom.impactStatus.classList.add('text-red-400', 'animate-pulse');
             dom.impactStatus.classList.remove('text-green-400');
         }
         
-        drawTrajectory();
+        startTrajectoryAnimation();
         updateChart();
     }
     
@@ -403,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             soundEngine.playSuccess();
         });
         window.addEventListener('resize', () => {
-            drawTrajectory();
+            startTrajectoryAnimation();
         });
         
         initMap();
@@ -413,5 +481,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     main();
 });
-
 
