@@ -22,12 +22,12 @@ Shareable Reports: Generate and copy a concise "Impact Report Card" to your clip
 
 Tech Stack
 This project is built with modern web technologies and leverages several powerful APIs and libraries:
--Frontend: HTML5, CSS3, JavaScript (ES6)
--Styling: Tailwind CSS(https://tailwindcss.com/)
--Mapping: Leaflet.js(https://leafletjs.com/)
--Charting: Chart.js(https://www.chartjs.org/)
--Web Audio: Tone.js(https://tonejs.github.io/)
--Data Source: NASA NEO Feed API(https://api.nasa.gov/)
+- Frontend: HTML5, CSS3, JavaScript (ES6)
+- Styling: Tailwind CSS(https://tailwindcss.com/)
+- Mapping: Leaflet.js(https://leafletjs.com/)
+- Charting: Chart.js(https://www.chartjs.org/)
+- Web Audio: Tone.js(https://tonejs.github.io/)
+- Data Source: NASA NEO Feed API(https://api.nasa.gov/)
 
 Project Structure
 The codebase is organized into a clean three-file structure for better maintainability and scalability:
