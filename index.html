@@ -13,12 +13,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- Local Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-900 text-gray-200 antialiased">
 
-    
     <div id="app" class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-8 md:mb-12">
             <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tighter">GeoThreat Simulator</h1>
@@ -30,7 +28,7 @@
                 <div id="controls" class="lg:col-span-1 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 space-y-6">
                     <div>
                         <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Load Data</h3>
-                        <button id="load-nasa-data" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg action-button" aria-label="Load real near-Earth object close approaches from NASA">Load Real Close Approaches (Next 7 Days)</button>
+                        <button id="load-nasa-data" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg action-button glow-on-hover" aria-label="Load real near-Earth object close approaches from NASA">Load Real Close Approaches (Next 7 Days)</button>
                         <div id="nasa-data-container" class="mt-4 max-h-40 overflow-y-auto hidden">
                             <ul id="nasa-data-list" class="text-sm space-y-1"></ul>
                         </div>
@@ -50,12 +48,12 @@
                         </div>
                     </div>
 
-                     <div>
+                    <div>
                         <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Impact Location</h3>
-                        <div id="map-container" class="w-full h-48 rounded-lg bg-gray-700 z-0">
+                         <div id="map-container" class="w-full h-48 rounded-lg bg-gray-700 z-0">
                             <div id="map"></div>
-                        </div>
-                        <p class="text-center text-sm text-gray-400 mt-2">Click map to set target. Current: <span id="location-name" class="font-bold text-orange-400">Ocean</span></p>
+                         </div>
+                         <p class="text-center text-sm text-gray-400 mt-2">Click map to set target. Current: <span id="location-name" class="font-bold text-orange-400">Ocean</span></p>
                     </div>
                     
                     <div>
@@ -69,26 +67,28 @@
                                 <option value="laser_ablation">Laser Ablation</option>
                            </select>
                         </div>
-                        <p id="mitigation-status" class="text-sm mt-2 text-gray-400">No mitigation strategy selected.</p>
-                        <div id="mitigation-briefing-container" class="briefing-panel mt-4 bg-gray-900/50 p-4 rounded-lg prose text-gray-300 text-sm">
+                       <p id="mitigation-status" class="text-sm mt-2 text-gray-400">No mitigation strategy selected.</p>
+                       <div id="mitigation-briefing-container" class="briefing-panel mt-4 bg-gray-900/50 p-4 rounded-lg prose text-gray-300 text-sm">
                             <h4 id="mitigation-title" class="text-orange-400 font-bold"></h4>
                             <p id="mitigation-description"></p>
                             <div id="mitigation-details"></div>
-                        </div>
+                       </div>
                     </div>
                 </div>
 
                 <div id="visuals-analysis" class="lg:col-span-2 space-y-8">
-                    <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 relative">
+                    <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 h-[400px] flex flex-col">
                         <h3 class="text-xl font-bold text-white mb-4">Trajectory & Impact Visualizer</h3>
-                        <canvas id="trajectory-canvas" class="w-full h-64 md:h-80 rounded-lg bg-black"></canvas>
-                        <p id="impact-status" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-lg font-medium text-red-400 animate-pulse">IMPACT IMMINENT</p>
+                        <div class="flex-grow relative rounded-lg bg-black overflow-hidden">
+                          <canvas id="trajectory-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+                        </div>
+                        <p id="impact-status" class="text-center mt-4 text-lg font-medium text-red-400 animate-pulse">IMPACT IMMINENT</p>
                     </div>
 
                     <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700">
                         <div class="flex justify-between items-start">
                             <h3 class="text-xl font-bold text-white mb-4">Consequence Analysis</h3>
-                            <button id="share-report-card" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded-lg text-sm action-button" aria-label="Share impact report card">Share Report</button>
+                            <button id="share-report-card" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded-lg text-sm action-button glow-on-hover" aria-label="Share impact report card">Share Report</button>
                         </div>
                         <div class="grid grid-cols-2 gap-6">
                             <div class="text-center bg-gray-900/50 p-4 rounded-lg">
@@ -109,10 +109,10 @@
                             </div>
                         </div>
                         <div class="mt-6">
-                             <button id="generate-briefing" class="w-full bg-orange-600 text-white font-bold py-2 px-4 rounded-lg mb-4 action-button" aria-label="Generate a detailed impact briefing">Generate Impact Briefing</button>
-                             <div class="chart-container">
+                              <button id="generate-briefing" class="w-full bg-orange-600 text-white font-bold py-2 px-4 rounded-lg mb-4 action-button glow-on-hover" aria-label="Generate a detailed impact briefing">Generate Impact Briefing</button>
+                              <div class="chart-container">
                                  <canvas id="energy-chart"></canvas>
-                             </div>
+                              </div>
                         </div>
                     </div>
                 </div>
@@ -121,13 +121,13 @@
         
         <footer class="text-center mt-8 md:mt-12 text-gray-500 text-sm">
             <p>A project for the 2025 NASA Space Apps Challenge. Inspired by data from NASA's NEO API and USGS environmental datasets.</p>
-            <p>Project by Team Cosmic</p>
+            <p>Project by Team Cosmic 🚀</p>
             <p>&copy; 2025 GeoThreat Simulator</p>
         </footer>
     </div>
     
-    <div id="briefing-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1001] hidden">
-        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-gray-700">
+    <div id="briefing-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1001] hidden modal-fade">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-gray-700 modal-scale">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
                 <h3 class="text-xl font-bold text-orange-400">Planetary Defense Briefing</h3>
                 <button id="close-modal" class="text-gray-400 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
@@ -136,16 +136,16 @@
         </div>
     </div>
     
-    <div id="report-card-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1001] hidden">
-        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700">
+    <div id="report-card-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1001] hidden modal-fade">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700 modal-scale">
              <div class="p-4 border-b border-gray-700 flex justify-between items-center">
                 <h3 class="text-xl font-bold text-orange-400">Impact Report Card</h3>
                 <button id="close-report-card" class="text-gray-400 hover:text-white text-2xl" aria-label="Close report card">&times;</button>
-            </div>
-            <div id="report-card-content" class="p-6 text-gray-300 space-y-3"></div>
-            <div class="p-4 border-t border-gray-700">
-                <button id="copy-report-card" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg action-button" aria-label="Copy report card to clipboard">Copy to Clipboard</button>
-            </div>
+             </div>
+             <div id="report-card-content" class="p-6 text-gray-300 space-y-3"></div>
+             <div class="p-4 border-t border-gray-700">
+                <button id="copy-report-card" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg" aria-label="Copy report card to clipboard">Copy to Clipboard</button>
+             </div>
         </div>
     </div>
     
@@ -154,6 +154,4 @@
     <script src="script.js" type="module"></script>
 </body>
 </html>
-
-
 
