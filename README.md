@@ -1,35 +1,51 @@
-# Meteor Madness Simulator
 
-An interactive web application developed for the 2025 NASA Space Apps Challenge. This tool allows users to simulate near-Earth asteroid impact scenarios, analyze potential consequences, and explore mitigation strategies through a dynamic, data-driven interface.
+GeoThreat Simulator ☄️
+Live Demo: https://geothreatsimulator.us/
 
-**Live Project Demo:** https://anonymousgrouphp-collab.github.io/meteor-madness-simulator-by-team-cosmic/
+GeoThreat Simulator is an interactive web application that allows users to model the potential consequences of a near-Earth object (NEO) impact. Users can adjust parameters such as asteroid size and velocity, select an impact location on an interactive world map, and explore various mitigation strategies. The simulator provides a detailed analysis of the physical, environmental, and socio-economic effects of the selected scenario.
 
----
+This project was inspired by the NASA Space Apps Challenge and utilizes real-world data to create an educational and engaging experience in planetary defense.
 
-## 🚀 Key Features
+Features
+Interactive World Map: Select a precise impact location anywhere on the globe using Leaflet.js.
+Dynamic Impact Parameters: Use sliders to adjust the asteroid's diameter (10m - 1000m) and impact velocity (10 km/s - 70 km/s).
+Real-World Data: Load close-approach data for the next 7 days directly from the NASA Near-Earth Object API.
+Consequence Analysis: Instantly view calculated outcomes, including:
+   -   Impact Energy (Megatons of TNT)
+   -   Crater Diameter (km)
+   -   Seismic Magnitude (Richter Scale)
 
-* **Accurate Geopolitical Impact Modeling:** An interactive world map allows users to select a target country. The simulator then uses a GeoJSON-based data model to calculate a **Socio-Economic Impact score** based on the specific country's demographic and development profile.
-* **Live NASA Data:** Load real-time data for upcoming asteroid close approaches directly from NASA's Near-Earth Object API to simulate real-world scenarios.
-* **Automatic Impact Briefing:** Instantly generate a detailed, data-driven report analyzing the physical and environmental consequences of the simulated impact.
-* **Educational Mitigation Briefings:** Learn how real-world planetary defense systems like Kinetic Impactors and Gravity Tractors work with on-demand information panels.
-* **Shareable Results:** Create and share a concise "Impact Report Card" to communicate simulation outcomes.
-* **Immersive Audio:** Sound effects for UI interactions, successful mitigations, and impacts provide a more engaging experience.
+Socio-Economic Modeling: See a simplified geopolitical impact rating (Low to Catastrophic) based on population density and development index of the target region.
+Mitigation Scenarios: Explore three different planetary defense strategies (Kinetic Impactor, Gravity Tractor, Laser Ablation) and see how they avert the threat.
+Data Visualization: Compare the simulated impact energy to historical events like the Tunguska event using a Chart.js logarithmic scale bar chart.
+Shareable Reports: Generate and copy a concise "Impact Report Card" to your clipboard to share the results of your simulation.
 
-## 🌟 Project Purpose & Vision
+Tech Stack
+This project is built with modern web technologies and leverages several powerful APIs and libraries:
+Frontend: HTML5, CSS3, JavaScript (ES6)
+Styling: Tailwind CSS(https://tailwindcss.com/)
+Mapping: Leaflet.js(https://leafletjs.com/)
+Charting: Chart.js(https://www.chartjs.org/)
+Web Audio: Tone.js(https://tonejs.github.io/)
+Data Source: NASA NEO Feed API(https://api.nasa.gov/)
 
-The "Meteor Madness" project was designed to solve a key part of the NASA challenge: making complex astronomical data accessible and engaging for everyone. By transforming raw data points into an interactive story with instant, geographically-aware analysis and educational content, we hope to raise public awareness about the real-world challenges and solutions in planetary defense.
+Project Structure
+The codebase is organized into a clean three-file structure for better maintainability and scalability:
+index.html: Contains the core HTML structure and layout of the application.
+style.css: Includes all custom styling, animations, and theme enhancements.
+script.js: Houses all the application logic, including calculations, API calls, and DOM manipulation.
 
-## 🧑‍🚀 The Team
+Deployment
+The live version of this project is hosted on Netlify and is configured for Continuous Deployment. Any push to the main branch of the GitHub repository will automatically trigger a new build and deploy the latest version of the site.
 
-This project was proudly developed by **Team Cosmic**.
+Team
+This project was proudly created by members of Team Cosmic:
+- Harsh Patel
+- Anirudh Sharma
+- Arfa Shurur
+- Komal Choubey 
 
-* Harsh Patel
-* Anirudh Sharma
-
-## 🛠️ Technology Stack
-
-* **Frontend:** HTML5, CSS3, Vanilla JavaScript
-* **Mapping:** Leaflet.js with GeoJSON
-* **Visualizations:** Chart.js & HTML Canvas API
-* **Audio:** Tone.js
-* **APIs:** NASA Near-Earth Object Web Service
+Acknowledgements
+NASA for providing the invaluable Near-Earth Object web service.
+OpenStreetMap & CARTO for the map tiles.
+Team Cosmic for the project concept and development.
