@@ -213,8 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let endPoint;
 
         if (deflection > 0) {
-            // Miss
-            controlPoint.y = -8 / deflection;
+            // Miss: A deflected path should curve AWAY from the planet.
+            // A positive controlPoint.y will bend the curve upwards.
+            // A stronger deflection results in a more pronounced (higher) curve.
+            controlPoint.y = 4 * deflection; 
             endPoint = new THREE.Vector3(earth.position.x, earth.position.y + 5 + (deflection * 0.5), 0);
         } else {
             // Hit
