@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3D Scene State ---
     let scene, camera, renderer, earth, meteor, stars, trajectoryCurve, meteorTime = 0;
+    const clock = new THREE.Clock(); // For frame-rate independent animation
 
     const GRID_COLS = 12;
     const GRID_ROWS = 6;
@@ -227,17 +228,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function animate3D() {
         requestAnimationFrame(animate3D);
+        
+        // Use the clock to get the time elapsed since the last frame
+        const deltaTime = clock.getDelta();
 
-        meteorTime += 0.005;
+        // Animate meteor along the path at a consistent speed
+        // The value (0.2) means the animation takes 5 seconds (1 / 0.2) to complete.
+        meteorTime += 0.2 * deltaTime;
         if (meteorTime > 1) {
-            meteorTime = 0;
+            meteorTime = 0; // Reset animation
             if (appState.mitigation === 'none') soundEngine.playImpact();
         }
 
         trajectoryCurve.getPointAt(meteorTime, meteor.position);
 
-        earth.rotation.y += 0.0005;
-        stars.rotation.y += 0.0001;
+        // Make rotations frame-rate independent
+        earth.rotation.y += 0.05 * deltaTime;
+        stars.rotation.y += 0.01 * deltaTime;
 
         renderer.render(scene, camera);
     }
