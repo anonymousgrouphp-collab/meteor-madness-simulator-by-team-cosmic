@@ -1,26 +1,132 @@
-body { font-family: 'Inter', sans-serif; }
-#map { height: 100%; width: 100%; border-radius: 0.5rem; cursor: crosshair; background-color: #1e3a8a; }
-.leaflet-container { font-family: 'Inter', sans-serif; }
-.chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; max-height: 400px; }
-.slider-thumb-orange::-webkit-slider-thumb { background-color: #f97316; }
-.slider-thumb-orange::-moz-range-thumb { background-color: #f97316; }
-.action-button { transition: all 0.2s ease-in-out; }
-.action-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
-.prose h3 { color: #fb923c; margin-bottom: 0.5rem; font-size: 1.1em; }
-.prose ul { list-style-position: inside; padding-left: 0; }
-.prose li, .prose p { margin-bottom: 0.75rem; }
-.nasa-item:hover { background-color: #3f3f46; }
+body { 
+    font-family: 'Inter', sans-serif; 
+}
+
+#map { 
+    height: 100%; 
+    width: 100%; 
+    border-radius: 0.5rem; 
+    cursor: crosshair; 
+    background-color: #1e3a8a; 
+}
+
+.leaflet-container { 
+    font-family: 'Inter', sans-serif; 
+}
+
+.chart-container { 
+    position: relative; 
+    width: 100%; 
+    max-width: 600px; 
+    margin: auto; 
+    height: 350px; 
+    max-height: 400px; 
+}
+
+.slider-thumb-orange::-webkit-slider-thumb { 
+    background-color: #f97316; 
+}
+
+.slider-thumb-orange::-moz-range-thumb { 
+    background-color: #f97316; 
+}
+
+.action-button { 
+    transition: all 0.2s ease-in-out;
+    /* Add a subtle default glow for emphasis */
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+}
+
+.action-button:hover { 
+    transform: translateY(-2px); 
+    /* Enhance the glow on hover */
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4), 0 0 25px rgba(249, 115, 22, 0.3);
+}
+
+.prose h3 { 
+    color: #fb923c; 
+    margin-bottom: 0.5rem; 
+    font-size: 1.1em; 
+}
+
+.prose ul { 
+    list-style-position: inside; 
+    padding-left: 0; 
+}
+
+.prose li, .prose p { 
+    margin-bottom: 0.75rem; 
+}
+
+.nasa-item:hover { 
+    background-color: #3f3f46; 
+}
+
 button:focus, select:focus, input[type=range]:focus, input[type=checkbox]:focus {
     outline: 2px solid #fb923c;
     outline-offset: 2px;
 }
+
 .briefing-panel {
     transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
     max-height: 0;
     opacity: 0;
     overflow: hidden;
 }
+
 .briefing-panel.visible {
     max-height: 500px;
     opacity: 1;
 }
+
+/* --- New Style Enhancements --- */
+
+/* 1. Custom Scrollbar for NASA Data List */
+#nasa-data-container::-webkit-scrollbar {
+    width: 8px;
+}
+#nasa-data-container::-webkit-scrollbar-track {
+    background: #1f2937; /* gray-800 */
+}
+#nasa-data-container::-webkit-scrollbar-thumb {
+    background-color: #f97316; /* orange-600 */
+    border-radius: 4px;
+    border: 2px solid #1f2937;
+}
+#nasa-data-container::-webkit-scrollbar-thumb:hover {
+    background-color: #ea580c; /* orange-700 */
+}
+
+/* 2. Modal Animation */
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#briefing-modal > div, 
+#report-card-modal > div {
+    animation: slideInUp 0.4s ease-out forwards;
+}
+
+/* 3. Subtle background enhancement for cards */
+#controls, #visuals-analysis > .bg-gray-800 {
+   background-color: #1f2937; /* Fallback for gray-800 */
+   background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.04) 0%, transparent 40%);
+}
+
+/* 4. Page Load Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+main > .grid {
+    animation: fadeIn 0.6s ease-in-out forwards;
+}
+
