@@ -227,15 +227,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`GeoJSON file not found: ${response.statusText}`);
             const data = await response.json();
             
-            // Load the GeoJSON layer, but don't add it to the map. We only need it for the lookup.
             geojsonLayer = L.geoJson(data);
             
             map.on('click', onMapClick);
 
         } catch (error) {
-            console.error("Could not load GeoJSON data. Please check file path.", error);
-            // Fallback if the geojson fails to load for any reason
-            map.on('click', (e) => {
+            console.error("Could not load GeoJSON data. Check file path.", error);
+            map.on('click', (e) => { // Fallback if geojson fails
                 if(impactMarker) { map.removeLayer(impactMarker); }
                 impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: 50000 }).addTo(map);
                 appState.location = { name: 'Ocean (Fallback)', type: 'oceanic', countryCode: 'OCEAN' };
@@ -249,25 +247,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if(impactMarker) { map.removeLayer(impactMarker); }
         impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: 50000 }).addTo(map);
 
-        // Use the leafletPip library to find the country
+        if (!geojsonLayer) { // Handle case where geojson didn't load
+            appState.location = { name: 'Ocean (Fallback)', type: 'oceanic', countryCode: 'OCEAN' };
+            soundEngine.playClick();
+            updateUI();
+            return;
+        }
+
         const results = leafletPip.pointInLayer(e.latlng, geojsonLayer, true);
 
         if (results.length > 0) {
-            // A country was found
             const feature = results[0].feature;
             const countryName = feature.properties.ADMIN;
             const countryCode = feature.properties.ISO_A3;
             const geoData = countryData[countryCode] || countryData["DEFAULT"];
             appState.location = { name: countryName, type: geoData.type, countryCode: countryCode };
         } else {
-            // No country found, must be ocean
             appState.location = { name: 'Ocean', type: 'oceanic', countryCode: 'OCEAN' };
         }
         
         soundEngine.playClick();
         updateUI();
     }
-
+    
     function calculateConsequences() {
         if (appState.mitigation !== 'none') {
             appState.impactEnergy = 0;
@@ -354,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateChart();
     }
     
-    // Main application entry point
     async function main() {
         dom.enableAudioBtn.addEventListener('click', () => {
             Tone.start();
