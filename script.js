@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initMap() {
         map = L.map('map', { zoomControl: false }).setView([20, 0], 2);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
             maxZoom: 10,
             minZoom: 2
         }).addTo(map);
@@ -226,33 +226,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/meteor-madness-simulator-by-team-cosmic/data/countries.geojson');
             if (!response.ok) throw new Error(`GeoJSON file not found: ${response.statusText}`);
             const data = await response.json();
-            geojsonLayer = L.geoJson(data, { style: { color: "#2563eb", weight: 1, opacity: 0.6, fillOpacity: 0.1, interactive: true } }).addTo(map);
-            geojsonLayer.on('click', onCountryClick);
-            map.on('click', onOceanClick);
+            
+            // Load the GeoJSON layer, but don't add it to the map. We only need it for the lookup.
+            geojsonLayer = L.geoJson(data);
+            
+            map.on('click', onMapClick);
+
         } catch (error) {
             console.error("Could not load GeoJSON data. Please check file path.", error);
-            map.on('click', onOceanClick); 
+            // Fallback if the geojson fails to load for any reason
+            map.on('click', (e) => {
+                if(impactMarker) { map.removeLayer(impactMarker); }
+                impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: 50000 }).addTo(map);
+                appState.location = { name: 'Ocean (Fallback)', type: 'oceanic', countryCode: 'OCEAN' };
+                soundEngine.playClick();
+                updateUI();
+            }); 
         }
     }
 
-    function onCountryClick(e) {
-        const feature = e.layer.feature;
-        L.DomEvent.stopPropagation(e);
-        const countryName = feature.properties.ADMIN;
-        const countryCode = feature.properties.ISO_A3;
+    function onMapClick(e) {
         if(impactMarker) { map.removeLayer(impactMarker); }
         impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: 50000 }).addTo(map);
-        const geoData = countryData[countryCode] || countryData["DEFAULT"];
-        appState.location = { name: countryName, type: geoData.type, countryCode: countryCode };
-        soundEngine.playClick();
-        updateUI();
-    }
 
-    function onOceanClick(e) {
-        if (e.originalEvent && e.originalEvent.target.classList.contains('leaflet-interactive')) return;
-        if(impactMarker) { map.removeLayer(impactMarker); }
-        impactMarker = L.circle(e.latlng, { color: '#f97316', fillColor: '#f97316', fillOpacity: 0.5, radius: 50000 }).addTo(map);
-        appState.location = { name: 'Ocean', type: 'oceanic', countryCode: 'OCEAN' };
+        // Use the leafletPip library to find the country
+        const results = leafletPip.pointInLayer(e.latlng, geojsonLayer, true);
+
+        if (results.length > 0) {
+            // A country was found
+            const feature = results[0].feature;
+            const countryName = feature.properties.ADMIN;
+            const countryCode = feature.properties.ISO_A3;
+            const geoData = countryData[countryCode] || countryData["DEFAULT"];
+            appState.location = { name: countryName, type: geoData.type, countryCode: countryCode };
+        } else {
+            // No country found, must be ocean
+            appState.location = { name: 'Ocean', type: 'oceanic', countryCode: 'OCEAN' };
+        }
+        
         soundEngine.playClick();
         updateUI();
     }
@@ -271,18 +282,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const kineticEnergyJoules = 0.5 * mass * Math.pow(velocityMetersPerSecond, 2);
         const energyMegatons = kineticEnergyJoules / (4.184 * Math.pow(10, 15));
         appState.impactEnergy = energyMegatons;
+        
         const craterDiameterKm = 0.02 * Math.pow(kineticEnergyJoules, 1/3.4) / 1000;
         const seismicMagnitude = 0.67 * (Math.log10(kineticEnergyJoules)) - 5.87;
+
         const geoData = countryData[appState.location.countryCode] || countryData["DEFAULT"];
         const baseImpact = Math.log10(appState.impactEnergy + 1);
         const socioEconomicScore = baseImpact * geoData.popDensity * geoData.devIndex;
+        
         let socioImpactLevel;
         if(socioEconomicScore > 15) socioImpactLevel = 'CATASTROPHIC';
         else if (socioEconomicScore > 10) socioImpactLevel = 'SEVERE';
         else if (socioEconomicScore > 5) socioImpactLevel = 'HIGH';
         else if (socioEconomicScore > 1) socioImpactLevel = 'MODERATE';
         else socioImpactLevel = 'LOW';
+        
         if(appState.location.type === 'oceanic') socioImpactLevel = 'LOW';
+
         return {
             energy: energyMegatons.toFixed(2),
             socioImpact: socioImpactLevel,
@@ -293,21 +309,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateUI() {
         const { energy, socioImpact, crater, seismic } = calculateConsequences();
+        
         dom.locationName.textContent = appState.location.name;
         dom.energyValue.textContent = `${Number(energy).toLocaleString()} MT`;
         dom.craterValue.textContent = `${Number(crater).toLocaleString()} km`;
         dom.seismicValue.textContent = seismic;
         dom.socioImpactValue.textContent = socioImpact;
+        
         const impactColorClasses = {
             'CATASTROPHIC': 'text-red-500', 'SEVERE': 'text-red-400', 'HIGH': 'text-orange-400',
             'MODERATE': 'text-yellow-400', 'LOW': 'text-green-400', 'NONE': 'text-gray-400'
         };
         dom.socioImpactValue.className = `text-2xl font-bold ${impactColorClasses[socioImpact] || 'text-gray-400'}`;
+        
         dom.sizeSlider.value = appState.diameter;
         dom.velocitySlider.value = appState.velocity;
         dom.sizeValue.textContent = `${appState.diameter} m`;
         dom.velocityValue.textContent = `${appState.velocity} km/s`;
         dom.mitigationSelect.value = appState.mitigation;
+        
         const mitigationText = {
             none: 'No mitigation strategy selected.',
             kinetic_impactor: 'Kinetic Impactor armed. Awaiting deployment.',
@@ -315,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
             laser_ablation: 'Laser Ablation system online. Vaporizing surface to create thrust.'
         };
         dom.mitigationStatus.textContent = mitigationText[appState.mitigation];
+
         if (appState.mitigation !== 'none') {
             dom.mitigationStatus.classList.remove('text-gray-400');
             dom.mitigationStatus.classList.add('text-green-400');
@@ -328,10 +349,12 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.impactStatus.classList.add('text-red-400');
             dom.impactStatus.classList.remove('text-green-400');
         }
+        
         drawTrajectory();
         updateChart();
     }
     
+    // Main application entry point
     async function main() {
         dom.enableAudioBtn.addEventListener('click', () => {
             Tone.start();
