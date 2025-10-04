@@ -5,12 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
         location: { name: 'Ocean', type: 'oceanic', regionCode: 'OCEAN' },
         mitigation: 'none',
         impactEnergy: 0,
-        isAudioEnabled: false,
+        isAudioEnabled: true,
     };
 
     const dom = {
-        audioModal: document.getElementById('audio-modal'),
-        enableAudioBtn: document.getElementById('enable-audio'),
         briefingModal: document.getElementById('briefing-modal'),
         modalContent: document.getElementById('modal-content'),
         closeModalBtn: document.getElementById('close-modal'),
@@ -46,9 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let map, impactMarker;
     let energyChart;
-    const t_ctx = dom.trajectoryCanvas.getContext('2d');
     const ASTEROID_DENSITY = 3000;
     const NASA_API_KEY = 'aORJuyPR46Rb3kIpjSZJPDtZEZtos9OTBPTAqt5i';
+
+    // --- 3D Scene State ---
+    let scene, camera, renderer, earth, meteor, stars, trajectoryCurve, meteorTime = 0;
 
     const GRID_COLS = 12;
     const GRID_ROWS = 6;
@@ -98,11 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
             details: `<p class="mt-2"><strong>Concept Status:</strong> A promising future technology.</p><ul><li><strong>Pros:</strong> No physical contact required.</li><li><strong>Cons:</strong> Requires an immense power source.</li></ul>`
         }
     };
-
-    // --- Animation State ---
-    let animationFrameId = null;
-    let meteor = { t: 0 }; // t is progress from 0 to 1
-    let trajectoryPath = {}; // to store path points for the animation
     
     function generateImpactBriefing() {
         soundEngine.playClick();
@@ -158,101 +153,100 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.mitigationBriefingContainer.classList.remove('visible');
         }
     }
-    
-    function startTrajectoryAnimation() {
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
+
+    function init3DScene() {
+        const canvas = dom.trajectoryCanvas;
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        camera.position.z = 12;
+
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(5, 3, 5);
+        scene.add(pointLight);
+
+        // Earth
+        const earthGeometry = new THREE.SphereGeometry(3, 32, 32);
+        const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x4d94ff });
+        earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        earth.position.x = 5;
+        scene.add(earth);
+
+        // Stars
+        const starVertices = [];
+        for (let i = 0; i < 10000; i++) {
+            const x = (Math.random() - 0.5) * 2000;
+            const y = (Math.random() - 0.5) * 2000;
+            const z = (Math.random() - 0.5) * 2000;
+            starVertices.push(x, y, z);
         }
+        const starGeometry = new THREE.BufferGeometry();
+        starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
+        stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
 
-        const w = dom.trajectoryCanvas.width = dom.trajectoryCanvas.clientWidth;
-        const h = dom.trajectoryCanvas.height = dom.trajectoryCanvas.clientHeight;
-        
-        const earthRadius = Math.min(w, h) * 0.15;
-        const earthX = w * 0.75, earthY = h / 2;
-        
-        const startX = -20, startY = h / 2;
-        const controlX = w * 0.3;
-        let controlY, endX, endY;
+        // Meteor
+        const meteorGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const meteorMaterial = new THREE.MeshBasicMaterial({ color: 0xf97316 });
+        meteor = new THREE.Mesh(meteorGeometry, meteorMaterial);
+        scene.add(meteor);
 
+        updateTrajectoryPath();
+        animate3D();
+    }
+
+    function updateTrajectoryPath() {
         const mitigationEffect = { none: 0, kinetic_impactor: 1, gravity_tractor: 0.8, laser_ablation: 1.2 };
         const deflection = mitigationEffect[appState.mitigation];
 
+        const startPoint = new THREE.Vector3(-15, 0, 0);
+        const controlPoint = new THREE.Vector3(0, 0, 0);
+        let endPoint;
+
         if (deflection > 0) {
-            controlY = h * (0.1 / deflection);
-            endY = earthY - earthRadius * (1.5 + deflection * 0.2);
-            endX = earthX;
+            // Miss
+            controlPoint.y = -8 / deflection;
+            endPoint = new THREE.Vector3(earth.position.x, earth.position.y + 5 + (deflection * 0.5), 0);
         } else {
-            controlY = h * 0.4;
-            endX = earthX - earthRadius * 0.5;
-            endY = earthY;
+            // Hit
+            controlPoint.y = -2;
+            endPoint = new THREE.Vector3(earth.position.x - 2.5, earth.position.y, 0);
         }
 
-        trajectoryPath = {
-            w, h, t_ctx,
-            earthRadius, earthX, earthY,
-            startX, startY, controlX, controlY, endX, endY,
-            isImpact: deflection === 0
-        };
-
-        meteor.t = 0;
-        animationLoop();
+        trajectoryCurve = new THREE.QuadraticBezierCurve3(startPoint, controlPoint, endPoint);
+        meteorTime = 0;
     }
 
-    function animationLoop() {
-        meteor.t += 0.005; // Animation speed
-        if (meteor.t > 1) {
-            meteor.t = 0;
-            if (trajectoryPath.isImpact) soundEngine.playImpact();
+    function animate3D() {
+        requestAnimationFrame(animate3D);
+
+        meteorTime += 0.005;
+        if (meteorTime > 1) {
+            meteorTime = 0;
+            if (appState.mitigation === 'none') soundEngine.playImpact();
         }
 
-        const { w, h, t_ctx, earthRadius, earthX, earthY, startX, startY, controlX, controlY, endX, endY, isImpact } = trajectoryPath;
-        
-        t_ctx.clearRect(0, 0, w, h);
-        
-        // Draw Earth
-        t_ctx.fillStyle = '#3b82f6';
-        t_ctx.beginPath();
-        t_ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
-        t_ctx.fill();
+        trajectoryCurve.getPointAt(meteorTime, meteor.position);
 
-        // Draw trajectory path
-        t_ctx.strokeStyle = '#f97316';
-        t_ctx.lineWidth = 2;
-        t_ctx.setLineDash([5, 5]);
-        t_ctx.beginPath();
-        t_ctx.moveTo(startX, startY);
-        t_ctx.quadraticCurveTo(controlX, controlY, endX, endY);
-        t_ctx.stroke();
-        t_ctx.setLineDash([]); // Reset line dash
+        earth.rotation.y += 0.0005;
+        stars.rotation.y += 0.0001;
 
-        // Calculate meteor's current position on the curve
-        const t = meteor.t;
-        const invT = 1 - t;
-        const meteorX = Math.pow(invT, 2) * startX + 2 * invT * t * controlX + Math.pow(t, 2) * endX;
-        const meteorY = Math.pow(invT, 2) * startY + 2 * invT * t * controlY + Math.pow(t, 2) * endY;
-        
-        // Draw meteor
-        t_ctx.beginPath();
-        const grad = t_ctx.createRadialGradient(meteorX, meteorY, 1, meteorX, meteorY, 8);
-        grad.addColorStop(0, 'white');
-        grad.addColorStop(0.4, 'rgba(249, 115, 22, 1)');
-        grad.addColorStop(1, 'rgba(249, 115, 22, 0)');
-        t_ctx.fillStyle = grad;
-        t_ctx.arc(meteorX, meteorY, 8, 0, Math.PI * 2);
-        t_ctx.fill();
+        renderer.render(scene, camera);
+    }
 
-        // Draw impact flash
-        if (isImpact && t > 0.99) {
-            const flashGrad = t_ctx.createRadialGradient(endX, endY, 5, endX, endY, 20);
-            flashGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-            flashGrad.addColorStop(1, 'rgba(255, 165, 0, 0)');
-            t_ctx.fillStyle = flashGrad;
-            t_ctx.beginPath();
-            t_ctx.arc(endX, endY, 20, 0, Math.PI * 2);
-            t_ctx.fill();
-        }
-
-        animationFrameId = requestAnimationFrame(animationLoop);
+    function onWindowResize() {
+        const canvas = dom.trajectoryCanvas;
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     }
     
     function createChart() {
@@ -429,17 +423,22 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.impactStatus.classList.remove('text-green-400');
         }
         
-        startTrajectoryAnimation();
+        updateTrajectoryPath();
         updateChart();
     }
     
     function main() {
-        dom.enableAudioBtn.addEventListener('click', () => {
+        // A one-time function to initialize audio on the first user interaction.
+        const initAudio = () => {
             Tone.start();
-            appState.isAudioEnabled = true;
-            dom.audioModal.style.display = 'none';
-            soundEngine.playSuccess();
-        });
+            console.log('Audio context started.');
+            // Remove the event listener after it has run once.
+            document.body.removeEventListener('click', initAudio);
+            document.body.removeEventListener('keydown', initAudio);
+        };
+        document.body.addEventListener('click', initAudio);
+        document.body.addEventListener('keydown', initAudio);
+
         dom.sizeSlider.addEventListener('input', (e) => { appState.diameter = parseInt(e.target.value); updateUI(); });
         dom.velocitySlider.addEventListener('input', (e) => { appState.velocity = parseInt(e.target.value); updateUI(); });
         dom.mitigationSelect.addEventListener('change', (e) => {
@@ -470,12 +469,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.execCommand('copy');
             soundEngine.playSuccess();
         });
-        window.addEventListener('resize', () => {
-            startTrajectoryAnimation();
-        });
+        window.addEventListener('resize', onWindowResize);
         
         initMap();
         createChart();
+        init3DScene();
         updateUI();
     }
 
