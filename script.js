@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scene.add(stars);
 
         // Meteor
-        const meteorGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const meteorGeometry = new THREE.SphereGeometry(0.4, 16, 16); // Increased size
         const meteorMaterial = new THREE.MeshBasicMaterial({ color: 0xf97316 });
         meteor = new THREE.Mesh(meteorGeometry, meteorMaterial);
         scene.add(meteor);
@@ -235,8 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaTime = clock.getDelta();
 
         // Animate meteor along the path at a consistent speed
-        // The value (0.2) means the animation takes 5 seconds (1 / 0.2) to complete.
-        meteorTime += 0.2 * deltaTime;
+        meteorTime += 0.3 * deltaTime; // Increased speed by 1.5x
         if (meteorTime > 1) {
             meteorTime = 0; // Reset animation
             if (appState.mitigation === 'none') soundEngine.playImpact();
