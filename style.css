@@ -1,27 +1,27 @@
-    body { font-family: 'Inter', sans-serif; }
-    #map { height: 100%; width: 100%; border-radius: 0.5rem; cursor: crosshair; background-color: #1e3a8a; }
-    .leaflet-container { font-family: 'Inter', sans-serif; }
-    .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; max-height: 400px; }
-    .slider-thumb-orange::-webkit-slider-thumb { background-color: #f97316; }
-    .slider-thumb-orange::-moz-range-thumb { background-color: #f97316; }
-    .action-button { transition: all 0.2s ease-in-out; }
-    .action-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
-    .prose h3 { color: #fb923c; margin-bottom: 0.5rem; font-size: 1.1em; }
-    .prose ul { list-style-position: inside; padding-left: 0; }
-    .prose li, .prose p { margin-bottom: 0.75rem; }
-    .nasa-item:hover { background-color: #3f3f46; }
-    button:focus, select:focus, input[type=range]:focus, input[type=checkbox]:focus {
-        outline: 2px solid #fb923c;
-        outline-offset: 2px;
-    }
-    .briefing-panel {
-        transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
-        max-height: 0;
-        opacity: 0;
-        overflow: hidden;
-    }
-    .briefing-panel.visible {
-        max-height: 500px;
-        opacity: 1;
-    }
-    
+body { font-family: 'Inter', sans-serif; }
+#map { height: 100%; width: 100%; border-radius: 0.5rem; cursor: crosshair; background-color: #1e3a8a; }
+.leaflet-container { font-family: 'Inter', sans-serif; }
+.chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; max-height: 400px; }
+.slider-thumb-orange::-webkit-slider-thumb { background-color: #f97316; }
+.slider-thumb-orange::-moz-range-thumb { background-color: #f97316; }
+.action-button { transition: all 0.2s ease-in-out; }
+.action-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
+.prose h3 { color: #fb923c; margin-bottom: 0.5rem; font-size: 1.1em; }
+.prose ul { list-style-position: inside; padding-left: 0; }
+.prose li, .prose p { margin-bottom: 0.75rem; }
+.nasa-item:hover { background-color: #3f3f46; }
+button:focus, select:focus, input[type=range]:focus, input[type=checkbox]:focus {
+    outline: 2px solid #fb923c;
+    outline-offset: 2px;
+}
+.briefing-panel {
+    transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+.briefing-panel.visible {
+    max-height: 500px;
+    opacity: 1;
+}
+
