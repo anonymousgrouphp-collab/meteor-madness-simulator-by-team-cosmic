@@ -287,18 +287,35 @@
             };
             
             function generateImpactBriefing() {
-                const { diameter, velocity, location, impactEnergy } = appState;
-                const { crater, seismic } = calculateConsequences();
-                let environmentalDetail = '';
-                switch(location.type) {
-                    case 'inland': environmentalDetail = 'Primary threat is a powerful atmospheric shockwave and widespread ejecta.'; break;
-                    case 'coastal': environmentalDetail = 'A significant tsunami is the most severe threat, capable of inundating low-lying coastal regions.'; break;
-                    case 'oceanic': environmentalDetail = 'A deep-ocean impact will generate a mega-tsunami with potential for trans-oceanic devastation.'; break;
+                soundEngine.playClick();
+                let briefingHTML = '';
+
+                if (appState.mitigation !== 'none') {
+                    const strategyName = appState.mitigation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    briefingHTML = `
+                        <h3>Threat Averted: Mitigation Success</h3>
+                        <p>The selected mitigation strategy, <strong>${strategyName}</strong>, has successfully deflected the asteroid.</p>
+                        <ul>
+                            <li><strong>Outcome:</strong> No impact.</li>
+                            <li><strong>Potential Threat:</strong> Asteroid with diameter ${appState.diameter}m and velocity ${appState.velocity}km/s.</li>
+                            <li><strong>Target Region Saved:</strong> ${appState.location.name}</li>
+                        </ul>
+                        <p class="text-green-400 font-bold">Planetary defense systems performed nominally. The threat to the planet has been neutralized.</p>
+                    `;
+                } else {
+                    const { location, impactEnergy } = appState;
+                    const { crater, seismic } = calculateConsequences();
+                    let environmentalDetail = '';
+                    switch(location.type) {
+                        case 'inland': environmentalDetail = 'Primary threat is a powerful atmospheric shockwave and widespread ejecta.'; break;
+                        case 'coastal': environmentalDetail = 'A significant tsunami is the most severe threat, capable of inundating low-lying coastal regions.'; break;
+                        case 'oceanic': environmentalDetail = 'A deep-ocean impact will generate a mega-tsunami with potential for trans-oceanic devastation.'; break;
+                    }
+                    briefingHTML = `<h3>Threat Summary</h3><p>Analysis of a simulated impact event targeting the <strong>${location.name}</strong> region.</p><h3>Calculated Physical Consequences</h3><ul><li><strong>Impact Energy:</strong> ${Number(impactEnergy).toLocaleString()} Megatons (MT).</li><li><strong>Estimated Crater Diameter:</strong> ${Number(crater).toLocaleString()} km.</li><li><strong>Equivalent Seismic Magnitude:</strong> ${seismic}.</li></ul><h3>Environmental Impact Analysis</h3><p>${environmentalDetail}</p>`;
                 }
-                const briefingHTML = `<h3>Threat Summary</h3><p>Analysis of a simulated impact event targeting the <strong>${location.name}</strong> region.</p><h3>Calculated Physical Consequences</h3><ul><li><strong>Impact Energy:</strong> ${Number(impactEnergy).toLocaleString()} Megatons (MT).</li><li><strong>Estimated Crater Diameter:</strong> ${Number(crater).toLocaleString()} km.</li><li><strong>Equivalent Seismic Magnitude:</strong> ${seismic}.</li></ul><h3>Environmental Impact Analysis</h3><p>${environmentalDetail}</p>`;
+                
                 dom.modalContent.innerHTML = briefingHTML;
                 dom.briefingModal.classList.remove('hidden');
-                soundEngine.playClick();
             }
             
             function updateMitigationBriefing() {
@@ -447,12 +464,12 @@
             }
 
             function calculateConsequences() {
+                dom.generateBriefingBtn.disabled = false;
                 if (appState.mitigation !== 'none') {
                     appState.impactEnergy = 0;
-                    dom.generateBriefingBtn.disabled = true;
                     return { energy: 0, socioImpact: 'NONE', crater: 0, seismic: '0.0' };
                 }
-                dom.generateBriefingBtn.disabled = false;
+                
                 const radius = appState.diameter / 2;
                 const volume = (4/3) * Math.PI * Math.pow(radius, 3);
                 const mass = volume * ASTEROID_DENSITY;
