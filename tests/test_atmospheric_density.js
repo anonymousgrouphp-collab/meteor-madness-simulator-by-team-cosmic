@@ -1,0 +1,8 @@
+import { AtmosphericDensityModel } from '../modules/atmospheric_density_models.js';
+export function testAtmosphere() {
+    const rhoSea = AtmosphericDensityModel.getDensity(0);
+    console.assert(Math.abs(rhoSea - 1.225) < 1e-3, 'Sea level density should match standard atmosphere');
+    const rho50k = AtmosphericDensityModel.getDensity(50000);
+    console.assert(rho50k < rhoSea, 'High altitude density must decrease exponentially');
+    return true;
+}
