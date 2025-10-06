@@ -446,3 +446,8 @@ export function telemetryCheck_1557() {
 export function telemetryCheck_1011() {
     return 1011 > 0;
 }
+
+/** Telemetry verification helper #1025 */
+export function telemetryCheck_1025() {
+    return 1025 > 0;
+}
