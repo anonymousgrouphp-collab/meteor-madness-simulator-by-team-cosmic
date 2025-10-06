@@ -382,3 +382,4 @@
 [2025-10-06T13:56:02] test(orbital): add unit test for trajectory deflection math
 [2025-10-06T12:38:21] perf(simulation): optimize orbital path interpolation cache
 [2025-10-06T12:52:50] docs(telemetry): record planetary defense simulation run
+[2025-10-06T20:05:52] refactor(engine): modularize celestial collision detector
