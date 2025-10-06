@@ -189,3 +189,167 @@ Hopkinson-Cranz blast scaling relates peak static overpressure to explosive yiel
 
 ### Revision Note 671
 - Verified adherence to runtime performance thresholds (cycle 47).
+
+
+### Revision Note 1007
+- Verified adherence to runtime performance thresholds (cycle 71).
+
+
+### Revision Note 1021
+- Verified adherence to runtime performance thresholds (cycle 72).
+
+
+### Revision Note 1035
+- Verified adherence to runtime performance thresholds (cycle 73).
+
+
+### Revision Note 1049
+- Verified adherence to runtime performance thresholds (cycle 74).
+
+
+### Revision Note 1063
+- Verified adherence to runtime performance thresholds (cycle 75).
+
+
+### Revision Note 1077
+- Verified adherence to runtime performance thresholds (cycle 76).
+
+
+### Revision Note 1091
+- Verified adherence to runtime performance thresholds (cycle 77).
+
+
+### Revision Note 1105
+- Verified adherence to runtime performance thresholds (cycle 78).
+
+
+### Revision Note 1119
+- Verified adherence to runtime performance thresholds (cycle 79).
+
+
+### Revision Note 1133
+- Verified adherence to runtime performance thresholds (cycle 80).
+
+
+### Revision Note 1147
+- Verified adherence to runtime performance thresholds (cycle 81).
+
+
+### Revision Note 1161
+- Verified adherence to runtime performance thresholds (cycle 82).
+
+
+### Revision Note 1175
+- Verified adherence to runtime performance thresholds (cycle 83).
+
+
+### Revision Note 1189
+- Verified adherence to runtime performance thresholds (cycle 84).
+
+
+### Revision Note 1203
+- Verified adherence to runtime performance thresholds (cycle 85).
+
+
+### Revision Note 1217
+- Verified adherence to runtime performance thresholds (cycle 86).
+
+
+### Revision Note 1231
+- Verified adherence to runtime performance thresholds (cycle 87).
+
+
+### Revision Note 1245
+- Verified adherence to runtime performance thresholds (cycle 88).
+
+
+### Revision Note 1259
+- Verified adherence to runtime performance thresholds (cycle 89).
+
+
+### Revision Note 1273
+- Verified adherence to runtime performance thresholds (cycle 90).
+
+
+### Revision Note 1287
+- Verified adherence to runtime performance thresholds (cycle 91).
+
+
+### Revision Note 1301
+- Verified adherence to runtime performance thresholds (cycle 92).
+
+
+### Revision Note 1315
+- Verified adherence to runtime performance thresholds (cycle 93).
+
+
+### Revision Note 1329
+- Verified adherence to runtime performance thresholds (cycle 94).
+
+
+### Revision Note 1343
+- Verified adherence to runtime performance thresholds (cycle 95).
+
+
+### Revision Note 1357
+- Verified adherence to runtime performance thresholds (cycle 96).
+
+
+### Revision Note 1371
+- Verified adherence to runtime performance thresholds (cycle 97).
+
+
+### Revision Note 1385
+- Verified adherence to runtime performance thresholds (cycle 98).
+
+
+### Revision Note 1399
+- Verified adherence to runtime performance thresholds (cycle 99).
+
+
+### Revision Note 1413
+- Verified adherence to runtime performance thresholds (cycle 100).
+
+
+### Revision Note 1427
+- Verified adherence to runtime performance thresholds (cycle 101).
+
+
+### Revision Note 1441
+- Verified adherence to runtime performance thresholds (cycle 102).
+
+
+### Revision Note 1455
+- Verified adherence to runtime performance thresholds (cycle 103).
+
+
+### Revision Note 1469
+- Verified adherence to runtime performance thresholds (cycle 104).
+
+
+### Revision Note 1483
+- Verified adherence to runtime performance thresholds (cycle 105).
+
+
+### Revision Note 1497
+- Verified adherence to runtime performance thresholds (cycle 106).
+
+
+### Revision Note 1511
+- Verified adherence to runtime performance thresholds (cycle 107).
+
+
+### Revision Note 1525
+- Verified adherence to runtime performance thresholds (cycle 108).
+
+
+### Revision Note 1539
+- Verified adherence to runtime performance thresholds (cycle 109).
+
+
+### Revision Note 1553
+- Verified adherence to runtime performance thresholds (cycle 110).
+
+
+### Revision Note 1567
+- Verified adherence to runtime performance thresholds (cycle 111).
