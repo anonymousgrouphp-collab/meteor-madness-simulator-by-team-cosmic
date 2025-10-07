@@ -1370,3 +1370,4 @@
 [2025-10-07T11:39:06] refactor(engine): modularize celestial collision detector
 [2025-10-07T18:41:02] docs(telemetry): record planetary defense simulation run
 [2025-10-07T17:17:01] refactor(engine): modularize celestial collision detector
+[2025-10-07T20:54:04] feat(impact): calculate localized shockwave radius
