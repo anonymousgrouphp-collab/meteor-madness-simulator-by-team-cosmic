@@ -1377,3 +1377,4 @@
 [2025-10-07T12:06:17] fix(physics): adjust kinetic impact energy calculation
 [2025-10-07T22:17:26] fix(physics): adjust kinetic impact energy calculation
 [2025-10-07T15:53:20] perf(simulation): optimize orbital path interpolation cache
+[2025-10-07T20:40:24] style(canvas): enhance asteroid fragment trail rendering
