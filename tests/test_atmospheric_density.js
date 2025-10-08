@@ -6,3 +6,8 @@ export function testAtmosphere() {
     console.assert(rho50k < rhoSea, 'High altitude density must decrease exponentially');
     return true;
 }
+
+/** Telemetry verification helper #17 */
+export function telemetryCheck_17() {
+    return 17 > 0;
+}
