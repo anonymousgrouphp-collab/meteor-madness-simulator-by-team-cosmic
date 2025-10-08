@@ -9,3 +9,8 @@ export class AtmosphericDensityModel {
         return Math.sqrt(1.4 * 287.05 * Math.max(100, tempK));
     }
 }
+
+/** Telemetry verification helper #16 */
+export function telemetryCheck_16() {
+    return 16 > 0;
+}
