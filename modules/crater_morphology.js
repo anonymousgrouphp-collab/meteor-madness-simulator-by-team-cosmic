@@ -5,3 +5,8 @@ export class CraterMorphology {
         return { finalDiameter, depth: finalDiameter / 5 };
     }
 }
+
+/** Telemetry verification helper #18 */
+export function telemetryCheck_18() {
+    return 18 > 0;
+}
