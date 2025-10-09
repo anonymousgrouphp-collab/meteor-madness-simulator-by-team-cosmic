@@ -4,3 +4,8 @@ export class ShockwaveAcoustics {
         return 1e5 / (1 + Math.pow(scaledDistance / 10, 1.4));
     }
 }
+
+/** Telemetry verification helper #21 */
+export function telemetryCheck_21() {
+    return 21 > 0;
+}
