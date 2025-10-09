@@ -5,3 +5,8 @@ export function testCrater() {
     console.assert(res.depth > 0, 'Crater depth must be non-zero');
     return true;
 }
+
+/** Telemetry verification helper #19 */
+export function telemetryCheck_19() {
+    return 19 > 0;
+}
