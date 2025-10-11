@@ -634,3 +634,4 @@
 [2025-10-11T11:17:37] style(canvas): enhance asteroid fragment trail rendering
 [2025-10-11T10:53:39] style(canvas): enhance asteroid fragment trail rendering
 [2025-10-11T12:04:29] style(canvas): enhance asteroid fragment trail rendering
+[2025-10-11T13:41:49] fix(physics): adjust kinetic impact energy calculation
