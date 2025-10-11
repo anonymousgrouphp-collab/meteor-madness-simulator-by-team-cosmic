@@ -641,3 +641,4 @@
 [2025-10-11T19:32:19] style(canvas): enhance asteroid fragment trail rendering
 [2025-10-11T20:26:51] docs(telemetry): record planetary defense simulation run
 [2025-10-11T17:42:20] docs(telemetry): record planetary defense simulation run
+[2025-10-11T15:29:09] perf(simulation): optimize orbital path interpolation cache
