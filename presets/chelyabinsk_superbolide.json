@@ -3,5 +3,6 @@
   "mass_kg": 12000000.0,
   "velocity_km_s": 19.16,
   "burst_alt_km": 29.7,
-  "sync_revision_24": "v1.24"
+  "sync_revision_24": "v1.24",
+  "sync_revision_38": "v2.38"
 }
