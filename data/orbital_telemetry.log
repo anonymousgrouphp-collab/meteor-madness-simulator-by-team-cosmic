@@ -2102,3 +2102,4 @@
 [2025-10-17T21:40:40] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-10-17T22:47:19] perf(simulation): optimize orbital path interpolation cache
 [2025-10-17T08:28:17] feat(impact): calculate localized shockwave radius
+[2025-10-17T12:48:39] refactor(engine): modularize celestial collision detector
