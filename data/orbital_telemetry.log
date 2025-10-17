@@ -2099,3 +2099,4 @@
 [2025-10-17T11:08:20] feat(impact): calculate localized shockwave radius
 [2025-10-17T14:19:39] perf(simulation): optimize orbital path interpolation cache
 [2025-10-17T18:20:14] style(canvas): enhance asteroid fragment trail rendering
+[2025-10-17T21:40:40] feat(trajectory): calibrate atmospheric entry drag coefficient
