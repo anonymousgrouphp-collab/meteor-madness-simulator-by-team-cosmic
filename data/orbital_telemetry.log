@@ -272,3 +272,4 @@
 [2025-10-20T17:09:15] feat(impact): calculate localized shockwave radius
 [2025-10-20T14:26:31] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-10-20T17:40:10] test(orbital): add unit test for trajectory deflection math
+[2025-10-20T17:43:39] refactor(engine): modularize celestial collision detector
