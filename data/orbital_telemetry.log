@@ -266,3 +266,4 @@
 [2025-10-20T14:01:31] refactor(engine): modularize celestial collision detector
 [2025-10-20T13:19:53] style(canvas): enhance asteroid fragment trail rendering
 [2025-10-20T15:12:31] feat(impact): calculate localized shockwave radius
+[2025-10-20T21:27:54] perf(simulation): optimize orbital path interpolation cache
