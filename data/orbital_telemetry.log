@@ -254,3 +254,4 @@
 [2025-10-20T18:34:47] docs(telemetry): record planetary defense simulation run
 [2025-10-20T15:37:10] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-10-20T19:26:29] feat(impact): calculate localized shockwave radius
+[2025-10-20T18:59:50] refactor(engine): modularize celestial collision detector
