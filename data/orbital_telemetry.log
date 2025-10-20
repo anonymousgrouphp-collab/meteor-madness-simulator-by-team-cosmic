@@ -268,3 +268,4 @@
 [2025-10-20T15:12:31] feat(impact): calculate localized shockwave radius
 [2025-10-20T21:27:54] perf(simulation): optimize orbital path interpolation cache
 [2025-10-20T23:42:03] test(orbital): add unit test for trajectory deflection math
+[2025-10-20T11:04:20] feat(impact): calculate localized shockwave radius
