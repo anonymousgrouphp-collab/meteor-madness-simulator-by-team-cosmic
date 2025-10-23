@@ -1266,3 +1266,4 @@
 [2025-10-23T23:10:27] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-10-23T08:33:06] test(orbital): add unit test for trajectory deflection math
 [2025-10-23T22:06:09] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2025-10-23T11:21:45] feat(trajectory): calibrate atmospheric entry drag coefficient
