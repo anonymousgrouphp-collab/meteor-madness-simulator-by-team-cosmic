@@ -1275,3 +1275,4 @@
 [2025-10-23T17:12:51] refactor(engine): modularize celestial collision detector
 [2025-10-23T13:07:45] docs(telemetry): record planetary defense simulation run
 [2025-10-23T08:01:36] refactor(engine): modularize celestial collision detector
+[2025-10-23T13:22:34] test(orbital): add unit test for trajectory deflection math
