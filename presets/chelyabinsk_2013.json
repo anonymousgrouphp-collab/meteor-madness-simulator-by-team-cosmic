@@ -1,0 +1,12 @@
+{
+  "name": "Chelyabinsk Superbolide (2013)",
+  "date": "2013-02-15",
+  "entryVelocityKmS": 19.16,
+  "entryAngleDeg": 18.3,
+  "estimatedDiameterMeters": 19.8,
+  "estimatedMassKg": 12000000.0,
+  "densityKgM3": 3300,
+  "airburstAltitudeKm": 29.7,
+  "totalEnergyYieldKtTNT": 470,
+  "taxonomicType": "S_TYPE"
+}
