@@ -1339,3 +1339,4 @@
 [2025-10-28T11:22:27] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-10-28T23:57:35] docs(telemetry): record planetary defense simulation run
 [2025-10-28T13:31:18] docs(telemetry): record planetary defense simulation run
+[2025-10-28T18:46:24] test(orbital): add unit test for trajectory deflection math
