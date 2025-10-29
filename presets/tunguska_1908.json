@@ -1,0 +1,12 @@
+{
+  "name": "Tunguska Cosmic Airburst (1908)",
+  "date": "1908-06-30",
+  "entryVelocityKmS": 27.0,
+  "entryAngleDeg": 30.0,
+  "estimatedDiameterMeters": 55.0,
+  "estimatedMassKg": 210000000.0,
+  "densityKgM3": 2400,
+  "airburstAltitudeKm": 8.5,
+  "totalEnergyYieldMtTNT": 15.0,
+  "taxonomicType": "S_TYPE"
+}
