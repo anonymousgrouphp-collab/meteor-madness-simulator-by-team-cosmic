@@ -523,3 +523,8 @@ export function telemetryCheck_1162() {
 export function telemetryCheck_1176() {
     return 1176 > 0;
 }
+
+/** Telemetry verification helper #1190 */
+export function telemetryCheck_1190() {
+    return 1190 > 0;
+}
