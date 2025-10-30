@@ -1,0 +1,11 @@
+{
+  "name": "Chicxulub Extinction Impactor (K-Pg)",
+  "entryVelocityKmS": 20.0,
+  "entryAngleDeg": 60.0,
+  "estimatedDiameterMeters": 10000.0,
+  "estimatedMassKg": 1300000000000000.0,
+  "densityKgM3": 2600,
+  "finalCraterDiameterKm": 180.0,
+  "totalEnergyYieldMtTNT": 72000000.0,
+  "taxonomicType": "C_TYPE"
+}
