@@ -2298,3 +2298,4 @@
 [2025-11-05T23:28:41] test(orbital): add unit test for trajectory deflection math
 [2025-11-05T15:46:14] docs(telemetry): record planetary defense simulation run
 [2025-11-05T20:18:48] feat(impact): calculate localized shockwave radius
+[2025-11-05T22:00:53] style(canvas): enhance asteroid fragment trail rendering
