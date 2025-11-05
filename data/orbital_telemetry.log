@@ -2307,3 +2307,4 @@
 [2025-11-05T13:02:59] style(canvas): enhance asteroid fragment trail rendering
 [2025-11-05T10:41:54] perf(simulation): optimize orbital path interpolation cache
 [2025-11-05T15:57:05] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2025-11-05T19:28:29] perf(simulation): optimize orbital path interpolation cache
