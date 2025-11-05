@@ -2300,3 +2300,4 @@
 [2025-11-05T20:18:48] feat(impact): calculate localized shockwave radius
 [2025-11-05T22:00:53] style(canvas): enhance asteroid fragment trail rendering
 [2025-11-05T11:14:45] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2025-11-05T08:39:58] fix(physics): adjust kinetic impact energy calculation
