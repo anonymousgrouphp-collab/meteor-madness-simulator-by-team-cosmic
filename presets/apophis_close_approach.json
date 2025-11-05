@@ -1,0 +1,11 @@
+{
+  "name": "99942 Apophis Close Approach Profile",
+  "semiMajorAxisAU": 0.922,
+  "perihelionAU": 0.746,
+  "aphelionAU": 1.098,
+  "eccentricity": 0.191,
+  "inclinationDeg": 3.33,
+  "diameterMeters": 340.0,
+  "massKg": 61000000000.0,
+  "closeApproachAltitude2029Km": 31600.0
+}
