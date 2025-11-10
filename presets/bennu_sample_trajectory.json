@@ -1,0 +1,9 @@
+{
+  "name": "101955 Bennu (OSIRIS-REx Benchmark)",
+  "meanDiameterMeters": 490.0,
+  "bulkDensityKgM3": 1190.0,
+  "porosityPercent": 60.0,
+  "albedo": 0.044,
+  "massKg": 73290000000.0,
+  "taxonomicType": "C_TYPE"
+}
