@@ -1957,3 +1957,4 @@
 [2025-11-10T21:50:29] test(orbital): add unit test for trajectory deflection math
 [2025-11-10T08:28:54] refactor(engine): modularize celestial collision detector
 [2025-11-10T12:49:30] test(orbital): add unit test for trajectory deflection math
+[2025-11-10T18:15:57] feat(trajectory): calibrate atmospheric entry drag coefficient
