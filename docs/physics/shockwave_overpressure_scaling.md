@@ -49,3 +49,7 @@ Hopkinson-Cranz blast scaling relates peak static overpressure to explosive yiel
 
 ### Revision Note 181
 - Verified adherence to runtime performance thresholds (cycle 12).
+
+
+### Revision Note 195
+- Verified adherence to runtime performance thresholds (cycle 13).
