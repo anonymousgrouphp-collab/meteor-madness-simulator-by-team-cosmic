@@ -322,3 +322,4 @@
 [2025-11-22T16:14:15] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-11-22T08:03:41] docs(telemetry): record planetary defense simulation run
 [2025-11-22T23:02:02] docs(telemetry): record planetary defense simulation run
+[2025-11-22T15:09:55] perf(simulation): optimize orbital path interpolation cache
