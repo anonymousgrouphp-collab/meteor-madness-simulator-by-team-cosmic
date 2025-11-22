@@ -318,3 +318,4 @@
 [2025-11-22T18:48:04] feat(impact): calculate localized shockwave radius
 [2025-11-22T20:34:03] refactor(engine): modularize celestial collision detector
 [2025-11-22T20:44:09] fix(physics): adjust kinetic impact energy calculation
+[2025-11-22T14:28:10] fix(physics): adjust kinetic impact energy calculation
