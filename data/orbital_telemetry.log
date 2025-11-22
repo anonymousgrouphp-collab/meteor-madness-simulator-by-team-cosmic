@@ -311,3 +311,4 @@
 [2025-11-22T20:11:20] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-11-22T17:20:36] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-11-22T09:46:45] perf(simulation): optimize orbital path interpolation cache
+[2025-11-22T23:04:59] fix(physics): adjust kinetic impact energy calculation
