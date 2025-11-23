@@ -2315,3 +2315,4 @@
 [2025-11-23T10:03:39] feat(impact): calculate localized shockwave radius
 [2025-11-23T17:06:40] perf(simulation): optimize orbital path interpolation cache
 [2025-11-23T12:48:17] feat(impact): calculate localized shockwave radius
+[2025-11-23T08:37:46] feat(impact): calculate localized shockwave radius
