@@ -2342,3 +2342,4 @@
 [2025-11-27T11:13:34] refactor(engine): modularize celestial collision detector
 [2025-11-27T09:47:32] feat(impact): calculate localized shockwave radius
 [2025-11-27T10:41:24] feat(impact): calculate localized shockwave radius
+[2025-11-27T12:11:07] feat(trajectory): calibrate atmospheric entry drag coefficient
