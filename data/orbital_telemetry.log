@@ -1839,3 +1839,4 @@
 [2025-11-29T15:49:24] perf(simulation): optimize orbital path interpolation cache
 [2025-11-29T20:42:03] style(canvas): enhance asteroid fragment trail rendering
 [2025-11-29T20:14:36] feat(impact): calculate localized shockwave radius
+[2025-11-29T19:24:04] test(orbital): add unit test for trajectory deflection math
