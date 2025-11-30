@@ -1919,3 +1919,4 @@
 [2026-05-14T12:46:39] docs(telemetry): record planetary defense simulation run
 [2026-05-14T09:52:01] perf(simulation): optimize orbital path interpolation cache
 [2026-05-14T19:06:08] fix(physics): adjust kinetic impact energy calculation
+[2025-11-30T14:46:55] feat(impact): calculate localized shockwave radius
