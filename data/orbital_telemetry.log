@@ -1486,3 +1486,4 @@
 [2025-12-01T13:14:11] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-12-01T08:04:44] refactor(engine): modularize celestial collision detector
 [2025-12-01T22:27:24] fix(physics): adjust kinetic impact energy calculation
+[2025-12-01T09:58:01] feat(impact): calculate localized shockwave radius
