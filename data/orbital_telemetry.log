@@ -1862,3 +1862,4 @@
 [2025-12-10T23:57:30] docs(telemetry): record planetary defense simulation run
 [2025-12-10T10:51:38] perf(simulation): optimize orbital path interpolation cache
 [2025-12-10T12:28:41] refactor(engine): modularize celestial collision detector
+[2025-12-10T08:29:21] feat(impact): calculate localized shockwave radius
