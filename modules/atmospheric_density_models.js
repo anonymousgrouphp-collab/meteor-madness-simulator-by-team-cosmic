@@ -124,3 +124,8 @@ export function telemetryCheck_310() {
 export function telemetryCheck_324() {
     return 324 > 0;
 }
+
+/** Telemetry verification helper #338 */
+export function telemetryCheck_338() {
+    return 338 > 0;
+}
