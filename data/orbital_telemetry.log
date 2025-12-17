@@ -1468,3 +1468,4 @@
 [2025-12-17T08:41:43] test(orbital): add unit test for trajectory deflection math
 [2025-12-17T15:41:38] fix(physics): adjust kinetic impact energy calculation
 [2025-12-17T12:34:29] style(canvas): enhance asteroid fragment trail rendering
+[2025-12-17T20:51:39] refactor(engine): modularize celestial collision detector
