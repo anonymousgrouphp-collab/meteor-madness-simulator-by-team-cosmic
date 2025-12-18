@@ -99,3 +99,7 @@ Derived for non-spherical impactors undergoing dynamic stagnation ablation.
 
 ### Revision Note 347
 - Verified adherence to runtime performance thresholds (cycle 24).
+
+
+### Revision Note 361
+- Verified adherence to runtime performance thresholds (cycle 25).
