@@ -1171,3 +1171,4 @@
 [2025-12-25T13:53:59] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2025-12-25T18:11:11] perf(simulation): optimize orbital path interpolation cache
 [2025-12-25T14:47:26] perf(simulation): optimize orbital path interpolation cache
+[2025-12-25T11:46:27] test(orbital): add unit test for trajectory deflection math
