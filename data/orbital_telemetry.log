@@ -1679,3 +1679,4 @@
 [2026-01-07T09:48:49] test(orbital): add unit test for trajectory deflection math
 [2026-01-07T15:30:34] docs(telemetry): record planetary defense simulation run
 [2026-01-07T10:35:24] perf(simulation): optimize orbital path interpolation cache
+[2026-01-07T23:57:11] style(canvas): enhance asteroid fragment trail rendering
