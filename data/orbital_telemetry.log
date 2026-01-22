@@ -1978,3 +1978,4 @@
 [2026-01-22T12:50:43] feat(impact): calculate localized shockwave radius
 [2026-01-22T12:21:32] fix(physics): adjust kinetic impact energy calculation
 [2026-01-22T13:09:20] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-01-22T18:24:25] style(canvas): enhance asteroid fragment trail rendering
