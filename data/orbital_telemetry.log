@@ -2245,3 +2245,4 @@
 [2026-06-20T11:36:15] fix(physics): adjust kinetic impact energy calculation
 [2026-01-24T08:15:54] perf(simulation): optimize orbital path interpolation cache
 [2026-01-24T23:19:08] test(orbital): add unit test for trajectory deflection math
+[2026-01-24T19:07:15] refactor(engine): modularize celestial collision detector
