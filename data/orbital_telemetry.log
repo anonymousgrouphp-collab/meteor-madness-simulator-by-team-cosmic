@@ -2253,3 +2253,4 @@
 [2026-01-24T14:25:04] test(orbital): add unit test for trajectory deflection math
 [2026-01-24T23:13:24] refactor(engine): modularize celestial collision detector
 [2026-01-24T12:58:28] fix(physics): adjust kinetic impact energy calculation
+[2026-01-24T14:44:22] refactor(engine): modularize celestial collision detector
