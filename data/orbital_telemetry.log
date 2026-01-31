@@ -130,3 +130,4 @@
 [2026-01-31T15:27:39] test(orbital): add unit test for trajectory deflection math
 [2026-01-31T22:47:09] feat(impact): calculate localized shockwave radius
 [2026-01-31T09:42:59] docs(telemetry): record planetary defense simulation run
+[2026-01-31T14:46:20] feat(trajectory): calibrate atmospheric entry drag coefficient
