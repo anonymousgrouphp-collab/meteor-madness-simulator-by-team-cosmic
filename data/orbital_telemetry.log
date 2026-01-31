@@ -142,3 +142,4 @@
 [2026-01-31T09:07:43] fix(physics): adjust kinetic impact energy calculation
 [2026-01-31T21:33:34] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-01-31T13:46:59] test(orbital): add unit test for trajectory deflection math
+[2026-01-31T19:02:09] fix(physics): adjust kinetic impact energy calculation
