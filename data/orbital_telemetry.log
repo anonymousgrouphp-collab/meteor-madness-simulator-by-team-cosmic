@@ -212,3 +212,4 @@
 [2026-02-04T08:19:24] docs(telemetry): record planetary defense simulation run
 [2026-02-04T23:24:24] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-02-04T16:44:24] test(orbital): add unit test for trajectory deflection math
+[2026-02-04T19:51:32] refactor(engine): modularize celestial collision detector
