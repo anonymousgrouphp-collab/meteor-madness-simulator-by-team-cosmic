@@ -207,3 +207,4 @@
 [2026-02-04T09:41:15] style(canvas): enhance asteroid fragment trail rendering
 [2026-02-04T16:28:27] test(orbital): add unit test for trajectory deflection math
 [2026-02-04T09:17:47] feat(impact): calculate localized shockwave radius
+[2026-02-04T10:21:35] feat(trajectory): calibrate atmospheric entry drag coefficient
