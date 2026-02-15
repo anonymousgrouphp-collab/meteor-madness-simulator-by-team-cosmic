@@ -607,3 +607,4 @@
 [2026-02-15T09:37:19] style(canvas): enhance asteroid fragment trail rendering
 [2026-02-15T11:52:09] docs(telemetry): record planetary defense simulation run
 [2026-02-15T15:56:15] feat(impact): calculate localized shockwave radius
+[2026-02-15T12:59:06] test(orbital): add unit test for trajectory deflection math
