@@ -590,3 +590,4 @@
 [2026-02-15T18:42:45] feat(impact): calculate localized shockwave radius
 [2026-02-15T16:09:09] docs(telemetry): record planetary defense simulation run
 [2026-02-15T10:39:24] style(canvas): enhance asteroid fragment trail rendering
+[2026-02-15T20:14:02] feat(trajectory): calibrate atmospheric entry drag coefficient
