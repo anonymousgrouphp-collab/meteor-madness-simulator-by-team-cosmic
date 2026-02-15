@@ -594,3 +594,4 @@
 [2026-02-15T17:00:08] docs(telemetry): record planetary defense simulation run
 [2026-02-15T21:36:12] refactor(engine): modularize celestial collision detector
 [2026-02-15T12:27:35] style(canvas): enhance asteroid fragment trail rendering
+[2026-02-15T14:00:04] perf(simulation): optimize orbital path interpolation cache
