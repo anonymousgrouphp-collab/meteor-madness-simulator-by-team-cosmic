@@ -1572,3 +1572,4 @@
 [2026-02-28T16:30:49] fix(physics): adjust kinetic impact energy calculation
 [2026-02-28T21:53:46] fix(physics): adjust kinetic impact energy calculation
 [2026-02-28T12:30:12] style(canvas): enhance asteroid fragment trail rendering
+[2026-02-28T10:13:57] fix(physics): adjust kinetic impact energy calculation
