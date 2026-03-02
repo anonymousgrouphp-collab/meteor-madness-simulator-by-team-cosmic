@@ -1431,3 +1431,4 @@
 [2026-07-29T10:09:46] fix(physics): adjust kinetic impact energy calculation
 [2026-07-29T13:03:13] style(canvas): enhance asteroid fragment trail rendering
 [2026-07-29T15:47:48] feat(impact): calculate localized shockwave radius
+[2026-03-02T18:14:27] test(orbital): add unit test for trajectory deflection math
