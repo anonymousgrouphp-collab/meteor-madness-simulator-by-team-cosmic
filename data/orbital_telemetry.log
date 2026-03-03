@@ -80,3 +80,4 @@
 [2026-03-03T19:43:11] perf(simulation): optimize orbital path interpolation cache
 [2026-03-03T11:31:12] perf(simulation): optimize orbital path interpolation cache
 [2026-03-03T18:29:59] refactor(engine): modularize celestial collision detector
+[2026-03-03T22:07:42] fix(physics): adjust kinetic impact energy calculation
