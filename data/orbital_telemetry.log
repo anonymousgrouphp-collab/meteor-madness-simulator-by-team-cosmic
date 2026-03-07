@@ -667,3 +667,4 @@
 [2026-03-07T16:33:25] docs(telemetry): record planetary defense simulation run
 [2026-03-07T21:49:46] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-03-07T22:46:37] style(canvas): enhance asteroid fragment trail rendering
+[2026-03-07T22:02:18] test(orbital): add unit test for trajectory deflection math
