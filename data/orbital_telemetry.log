@@ -694,3 +694,4 @@
 [2026-03-07T10:09:55] fix(physics): adjust kinetic impact energy calculation
 [2026-03-07T08:15:04] style(canvas): enhance asteroid fragment trail rendering
 [2026-03-07T13:07:48] feat(impact): calculate localized shockwave radius
+[2026-03-07T18:07:32] feat(impact): calculate localized shockwave radius
