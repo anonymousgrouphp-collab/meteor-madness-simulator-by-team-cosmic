@@ -1113,3 +1113,4 @@
 [2025-09-27T17:29:06] test(orbital): add unit test for trajectory deflection math
 [2025-09-27T18:12:06] docs(telemetry): record planetary defense simulation run
 [2025-09-27T13:23:39] docs(telemetry): record planetary defense simulation run
+[2026-03-11T21:30:46] fix(physics): adjust kinetic impact energy calculation
