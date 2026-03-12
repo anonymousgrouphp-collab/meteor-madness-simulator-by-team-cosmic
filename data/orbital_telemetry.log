@@ -150,3 +150,4 @@
 [2026-03-12T20:18:43] refactor(engine): modularize celestial collision detector
 [2026-03-12T22:58:47] docs(telemetry): record planetary defense simulation run
 [2026-03-12T23:39:16] test(orbital): add unit test for trajectory deflection math
+[2026-03-12T22:30:58] perf(simulation): optimize orbital path interpolation cache
