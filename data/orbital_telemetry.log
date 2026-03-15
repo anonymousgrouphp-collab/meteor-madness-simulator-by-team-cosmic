@@ -1802,3 +1802,4 @@
 [2026-03-15T19:22:45] perf(simulation): optimize orbital path interpolation cache
 [2026-03-15T20:11:58] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-03-15T13:36:46] feat(impact): calculate localized shockwave radius
+[2026-03-15T15:22:08] test(orbital): add unit test for trajectory deflection math
