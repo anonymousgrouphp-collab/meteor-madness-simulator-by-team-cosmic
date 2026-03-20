@@ -46,7 +46,7 @@ The live version of this project is hosted on Netlify and is configured for Cont
 Team
 
 This project was proudly created by members of Team Cosmic:
-- Harsh Patel
+- Harsh Patel(https://www.linkedin.com/in/harshpatel-io/)
 - Anirudh Sharma
 - Arfa Shurur
 - Komal Choubey 
