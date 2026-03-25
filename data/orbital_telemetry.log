@@ -1012,3 +1012,4 @@
 [2026-05-06T23:46:40] feat(impact): calculate localized shockwave radius
 [2026-05-06T20:59:03] perf(simulation): optimize orbital path interpolation cache
 [2026-03-25T10:49:49] style(canvas): enhance asteroid fragment trail rendering
+[2026-03-25T08:25:59] style(canvas): enhance asteroid fragment trail rendering
