@@ -1661,3 +1661,4 @@
 [2026-03-26T15:53:15] refactor(engine): modularize celestial collision detector
 [2026-03-26T13:51:00] perf(simulation): optimize orbital path interpolation cache
 [2026-03-26T22:23:22] perf(simulation): optimize orbital path interpolation cache
+[2026-03-26T10:16:29] feat(impact): calculate localized shockwave radius
