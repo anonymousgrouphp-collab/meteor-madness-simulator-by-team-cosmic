@@ -1672,3 +1672,4 @@
 [2026-03-26T23:46:00] test(orbital): add unit test for trajectory deflection math
 [2026-03-26T11:27:06] fix(physics): adjust kinetic impact energy calculation
 [2026-03-26T21:13:34] test(orbital): add unit test for trajectory deflection math
+[2026-03-26T18:35:35] fix(physics): adjust kinetic impact energy calculation
