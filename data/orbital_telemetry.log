@@ -216,3 +216,4 @@
 [2026-02-04T21:45:21] perf(simulation): optimize orbital path interpolation cache
 [2026-02-04T19:46:16] docs(telemetry): record planetary defense simulation run
 [2026-03-28T23:18:17] fix(physics): adjust kinetic impact energy calculation
+[2026-03-28T22:58:42] fix(physics): adjust kinetic impact energy calculation
