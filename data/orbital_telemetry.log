@@ -905,3 +905,4 @@
 [2026-04-03T22:46:56] fix(physics): adjust kinetic impact energy calculation
 [2026-04-03T09:38:12] docs(telemetry): record planetary defense simulation run
 [2026-04-03T10:40:43] docs(telemetry): record planetary defense simulation run
+[2026-04-03T23:13:08] refactor(engine): modularize celestial collision detector
