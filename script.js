@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sizeValue: document.getElementById('size-value'),
         velocityValue: document.getElementById('velocity-value'),
         locationName: document.getElementById('location-name'),
+        locationReadoutName: document.getElementById('location-readout-name'),
         mitigationSelect: document.getElementById('mitigation-strategy'),
         mitigationStatus: document.getElementById('mitigation-status'),
         mitigationBriefingContainer: document.getElementById('mitigation-briefing-container'),
@@ -112,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>The <strong>${mitigationData.title}</strong> mitigation strategy was successfully deployed.</p>
                 <h3>Outcome Analysis</h3>
                 <p>The asteroid's trajectory was altered, preventing impact with Earth. This action successfully averted a potential catastrophe in the <strong>${location.name}</strong> region.</p>
-                <p class="text-green-400 font-bold mt-4">MISSION STATUS: SUCCESSFUL</p>
+                <p class="color-success mt-4" style="font-weight: bold; letter-spacing: 1px;">MISSION STATUS: SUCCESSFUL</p>
             `;
         } else {
             const { impactEnergy } = appState;
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </ul>
                 <h3>Environmental Impact Analysis</h3>
                 <p>${environmentalDetail}</p>
-                <p class="text-red-400 font-bold mt-4">MISSION STATUS: FAILURE</p>
+                <p class="color-danger mt-4" style="font-weight: bold; letter-spacing: 1px;">MISSION STATUS: FAILURE</p>
             `;
         }
         
@@ -291,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 asteroids.slice(0, 10).forEach(ast => {
                     const li = document.createElement('li');
-                    li.className = 'p-2 rounded-md cursor-pointer nasa-item';
+                    li.className = 'nasa-item';
                     li.textContent = `${ast.name}`;
                     li.dataset.diameter = Math.round((ast.estimated_diameter.meters.estimated_diameter_min + ast.estimated_diameter.meters.estimated_diameter_max) / 2);
                     li.dataset.velocity = Math.round(ast.close_approach_data[0].relative_velocity.kilometers_per_second);
@@ -309,9 +310,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function showReportCard() {
         soundEngine.playClick();
         const outcome = appState.mitigation !== 'none' ? 'SUCCESS: THREAT AVERTED' : 'FAILURE: CATASTROPHIC IMPACT';
-        const color = outcome.startsWith('SUCCESS') ? 'text-green-400' : 'text-red-400';
+        const color = outcome.startsWith('SUCCESS') ? 'color-success' : 'color-danger';
         const { energy } = calculateConsequences();
-        dom.reportCardContent.innerHTML = `<p class="text-xl font-bold ${color}">${outcome}</p><p><strong>Target Region:</strong> ${appState.location.name}</p><p><strong>Asteroid Size:</strong> ${appState.diameter} m</p><p><strong>Impact Velocity:</strong> ${appState.velocity} km/s</p><p><strong>Mitigation Used:</strong> ${appState.mitigation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p><p><strong>Resulting Energy:</strong> ${Number(energy).toLocaleString()} MT</p>`;
+        dom.reportCardContent.innerHTML = `<p class="report-outcome ${color}">${outcome}</p><p><strong>Target Region:</strong> ${appState.location.name}</p><p><strong>Asteroid Size:</strong> ${appState.diameter} m</p><p><strong>Impact Velocity:</strong> ${appState.velocity} km/s</p><p><strong>Mitigation Used:</strong> ${appState.mitigation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p><p><strong>Resulting Energy:</strong> ${Number(energy).toLocaleString()} MT</p>`;
         dom.reportCardModal.classList.remove('hidden');
     }
 
@@ -392,16 +393,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const { energy, socioImpact, crater, seismic } = calculateConsequences();
         
         dom.locationName.textContent = appState.location.name;
+        if (dom.locationReadoutName) dom.locationReadoutName.textContent = appState.location.name;
         dom.energyValue.textContent = `${Number(energy).toLocaleString()} MT`;
         dom.craterValue.textContent = `${Number(crater).toLocaleString()} km`;
         dom.seismicValue.textContent = seismic;
         dom.socioImpactValue.textContent = socioImpact;
         
         const impactColorClasses = {
-            'CATASTROPHIC': 'text-red-500', 'SEVERE': 'text-red-400', 'HIGH': 'text-orange-400',
-            'MODERATE': 'text-yellow-400', 'LOW': 'text-green-400', 'NONE': 'text-gray-400'
+            'CATASTROPHIC': 'color-danger', 'SEVERE': 'color-warning-high', 'HIGH': 'color-warning',
+            'MODERATE': 'color-info', 'LOW': 'color-success', 'NONE': 'color-neutral'
         };
-        dom.socioImpactValue.className = `text-2xl font-bold ${impactColorClasses[socioImpact] || 'text-gray-400'}`;
+        dom.socioImpactValue.className = `metric-value ${impactColorClasses[socioImpact] || 'color-neutral'}`;
         
         dom.sizeSlider.value = appState.diameter;
         dom.velocitySlider.value = appState.velocity;
@@ -418,17 +420,17 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.mitigationStatus.textContent = mitigationText[appState.mitigation];
 
         if (appState.mitigation !== 'none') {
-            dom.mitigationStatus.classList.remove('text-gray-400');
-            dom.mitigationStatus.classList.add('text-green-400');
-            dom.impactStatus.textContent = 'ASTEROID DEFLECTED';
-            dom.impactStatus.classList.remove('text-red-400', 'animate-pulse');
-            dom.impactStatus.classList.add('text-green-400');
+            dom.mitigationStatus.classList.remove('color-neutral');
+            dom.mitigationStatus.classList.add('color-success', 'active');
+            dom.impactStatus.textContent = '◈ ASTEROID DEFLECTED ◈';
+            dom.impactStatus.classList.remove('danger', 'animate-pulse');
+            dom.impactStatus.classList.add('safe');
         } else {
-            dom.mitigationStatus.classList.add('text-gray-400');
-            dom.mitigationStatus.classList.remove('text-green-400');
-            dom.impactStatus.textContent = 'IMPACT IMMINENT';
-            dom.impactStatus.classList.add('text-red-400', 'animate-pulse');
-            dom.impactStatus.classList.remove('text-green-400');
+            dom.mitigationStatus.classList.add('color-neutral');
+            dom.mitigationStatus.classList.remove('color-success', 'active');
+            dom.impactStatus.textContent = '◈ IMPACT IMMINENT ◈';
+            dom.impactStatus.classList.add('danger', 'animate-pulse');
+            dom.impactStatus.classList.remove('safe');
         }
         
         updateTrajectoryPath();
