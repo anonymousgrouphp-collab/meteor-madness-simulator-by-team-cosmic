@@ -3,155 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoThreat Simulator - Planetary Impact Modeler</title>
-    
+    <title>GeoThreat Simulator — Planetary Defense Command</title>
+    <meta name="description" content="Interactive near-Earth object impact simulator powered by NASA NEO data. Model asteroid impact scenarios, analyze consequences, and explore mitigation strategies.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+
     <!-- External Libraries -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-gray-200 antialiased">
+<body>
+    <!-- Animated Star Field -->
+    <canvas id="star-field"></canvas>
 
-    <div id="app" class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-8 md:mb-12">
-            <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tighter">GeoThreat Simulator</h1>
-            <p class="text-lg md:text-xl text-gray-400 mt-2">Planetary Impact Modeler</p>
-        </header>
+    <div id="app" class="dashboard">
 
-        <main>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div id="controls" class="lg:col-span-1 bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 space-y-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Load Data</h3>
-                        <button id="load-nasa-data" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg action-button glow-on-hover" aria-label="Load real near-Earth object close approaches from NASA">Load Real Close Approaches (Next 7 Days)</button>
-                        <div id="nasa-data-container" class="mt-4 max-h-40 overflow-y-auto hidden">
-                            <ul id="nasa-data-list" class="text-sm space-y-1"></ul>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Impact Parameters</h3>
-                        <div>
-                            <label for="asteroid-size" class="block text-sm font-medium text-gray-300">Asteroid Diameter (meters)</label>
-                            <input id="asteroid-size" type="range" min="10" max="1000" value="140" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb-orange" aria-label="Adjust asteroid diameter">
-                            <span id="size-value" class="text-orange-400 font-mono text-center block mt-2">140 m</span>
-                        </div>
-                        <div class="mt-4">
-                            <label for="asteroid-velocity" class="block text-sm font-medium text-gray-300">Impact Velocity (km/s)</label>
-                            <input id="asteroid-velocity" type="range" min="10" max="70" value="20" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb-orange" aria-label="Adjust asteroid velocity">
-                            <span id="velocity-value" class="text-orange-400 font-mono text-center block mt-2">20 km/s</span>
-                        </div>
-                    </div>
+        <!-- ── SIDEBAR ── -->
+        <aside class="sidebar hud-panel">
+            <div class="panel-glow-line"></div>
 
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Impact Location</h3>
-                         <div id="map-container" class="w-full h-48 rounded-lg bg-gray-700 z-0">
-                            <div id="map"></div>
-                         </div>
-                         <p class="text-center text-sm text-gray-400 mt-2">Click map to set target. Current: <span id="location-name" class="font-bold text-orange-400">Ocean</span></p>
+            <header class="app-header">
+                <div class="overline">// NASA Space Apps 2025 //</div>
+                <h1>GeoThreat<br><span class="accent">Simulator</span></h1>
+                <div class="subtitle">Planetary Defense Command</div>
+            </header>
+
+            <div class="status-bar">
+                <div class="status-dot"></div>
+                <span>SYS ONLINE &nbsp;|&nbsp; NASA NEO API LINKED &nbsp;|&nbsp; TEAM COSMIC</span>
+            </div>
+
+            <div id="controls" class="controls-area">
+
+                <!-- SECTION: INTEL FEED -->
+                <section class="control-group">
+                    <div class="section-label">Intel Feed</div>
+                    <button id="load-nasa-data" class="btn-load" aria-label="Load real NEO close approach data from NASA">
+                        ◈ Load Real Close Approaches (7 Days)
+                    </button>
+                    <div id="nasa-data-container" class="data-container hidden">
+                        <ul id="nasa-data-list"></ul>
                     </div>
-                    
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-600 pb-3">Mitigation Systems</h3>
-                        <div>
-                           <label for="mitigation-strategy" class="block text-sm font-medium text-gray-300">Select Strategy</label>
-                           <select id="mitigation-strategy" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1" aria-label="Select a mitigation strategy">
-                                <option value="none">None (No Action)</option>
-                                <option value="kinetic_impactor">Kinetic Impactor</option>
-                                <option value="gravity_tractor">Gravity Tractor</option>
-                                <option value="laser_ablation">Laser Ablation</option>
-                           </select>
+                </section>
+
+                <!-- SECTION: THREAT PARAMETERS -->
+                <section class="control-group">
+                    <div class="section-label">Threat Parameters</div>
+                    <div class="slider-wrapper">
+                        <div class="slider-row">
+                            <span class="slider-label">Diameter</span>
+                            <span id="size-value" class="slider-value">140 m</span>
                         </div>
-                       <p id="mitigation-status" class="text-sm mt-2 text-gray-400">No mitigation strategy selected.</p>
-                       <div id="mitigation-briefing-container" class="briefing-panel mt-4 bg-gray-900/50 p-4 rounded-lg prose text-gray-300 text-sm">
-                            <h4 id="mitigation-title" class="text-orange-400 font-bold"></h4>
+                        <input id="asteroid-size" type="range" min="10" max="1000" value="140" class="custom-slider" aria-label="Asteroid diameter in meters">
+                    </div>
+                    <div class="slider-wrapper">
+                        <div class="slider-row">
+                            <span class="slider-label">Impact Velocity</span>
+                            <span id="velocity-value" class="slider-value">20 km/s</span>
+                        </div>
+                        <input id="asteroid-velocity" type="range" min="10" max="70" value="20" class="custom-slider" aria-label="Impact velocity in km/s">
+                    </div>
+                </section>
+
+                <!-- SECTION: DEFENSE PROTOCOLS -->
+                <section class="control-group">
+                    <div class="section-label">Defense Protocols</div>
+                    <label class="select-label" for="mitigation-strategy">Active Strategy</label>
+                    <select id="mitigation-strategy" class="custom-select" aria-label="Select mitigation strategy">
+                        <option value="none">[ NONE ] — No Action</option>
+                        <option value="kinetic_impactor">[ KI ] — Kinetic Impactor</option>
+                        <option value="gravity_tractor">[ GT ] — Gravity Tractor</option>
+                        <option value="laser_ablation">[ LA ] — Laser Ablation</option>
+                    </select>
+                    <p id="mitigation-status" class="mitigation-status-text">Awaiting deployment orders.</p>
+                    <div id="mitigation-briefing-container" class="briefing-panel">
+                        <div class="briefing-inner">
+                            <h4 id="mitigation-title"></h4>
                             <p id="mitigation-description"></p>
                             <div id="mitigation-details"></div>
-                       </div>
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <div id="visuals-analysis" class="lg:col-span-2 space-y-8">
-                    <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700 h-[400px] flex flex-col">
-                        <h3 class="text-xl font-bold text-white mb-4">Trajectory & Impact Visualizer</h3>
-                        <div class="flex-grow relative rounded-lg bg-black overflow-hidden">
-                          <canvas id="trajectory-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
-                        </div>
-                        <p id="impact-status" class="text-center mt-4 text-lg font-medium text-red-400 animate-pulse">IMPACT IMMINENT</p>
-                    </div>
-
-                    <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl border border-gray-700">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-xl font-bold text-white mb-4">Consequence Analysis</h3>
-                            <button id="share-report-card" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1 px-3 rounded-lg text-sm action-button glow-on-hover" aria-label="Share impact report card">Share Report</button>
-                        </div>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="text-center bg-gray-900/50 p-4 rounded-lg">
-                                <p class="text-sm text-gray-400">Impact Energy</p>
-                                <p id="energy-value" class="text-2xl font-bold text-orange-400">0 MT</p>
-                            </div>
-                            <div class="text-center bg-gray-900/50 p-4 rounded-lg">
-                                <p class="text-sm text-gray-400">Crater Diameter</p>
-                                <p id="crater-value" class="text-2xl font-bold text-orange-400">0 km</p>
-                            </div>
-                             <div class="text-center bg-gray-900/50 p-4 rounded-lg">
-                                <p class="text-sm text-gray-400">Seismic Magnitude</p>
-                                <p id="seismic-value" class="text-2xl font-bold text-orange-400">0.0</p>
-                            </div>
-                            <div class="text-center bg-gray-900/50 p-4 rounded-lg">
-                                <p class="text-sm text-gray-400">Socio-Economic Impact</p>
-                                <p id="socio-impact-value" class="text-2xl font-bold text-orange-400">LOW</p>
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                              <button id="generate-briefing" class="w-full bg-orange-600 text-white font-bold py-2 px-4 rounded-lg mb-4 action-button glow-on-hover" aria-label="Generate a detailed impact briefing">Generate Impact Briefing</button>
-                              <div class="chart-container">
-                                 <canvas id="energy-chart"></canvas>
-                              </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+            <footer class="sidebar-footer">
+                <div>◈ Team Cosmic &nbsp;//&nbsp; GeoThreat &copy; 2025</div>
+            </footer>
+        </aside>
+
+        <!-- ── MAIN WORKSPACE ── -->
+        <main class="main-workspace">
+
+            <!-- TOP ROW: Map + Trajectory -->
+            <div class="top-row">
+
+                <!-- Map Panel -->
+                <section class="hud-panel map-panel">
+                    <div class="panel-glow-line"></div>
+                    <div class="panel-header">
+                        <span>// Target Acquisition</span>
+                        <span class="panel-header-badge" id="location-name">Ocean</span>
+                    </div>
+                    <div id="map-container" class="map-wrapper">
+                        <div id="map"></div>
+                    </div>
+                    <div class="location-readout">Target Region: <span id="location-readout-name">Ocean</span></div>
+                </section>
+
+                <!-- Trajectory Visualizer -->
+                <section class="hud-panel visualizer-panel">
+                    <div class="panel-glow-line"></div>
+                    <div class="panel-header">
+                        <span>// Trajectory & Impact Visualizer</span>
+                        <span class="panel-header-badge">THREE.JS LIVE</span>
+                    </div>
+                    <div class="trajectory-wrapper">
+                        <canvas id="trajectory-canvas"></canvas>
+                        <div class="trajectory-overlay"></div>
+                    </div>
+                    <p id="impact-status" class="impact-alert danger animate-pulse">◈ IMPACT IMMINENT ◈</p>
+                </section>
+
+            </div>
+
+            <!-- CONSEQUENCE ANALYSIS -->
+            <section class="hud-panel analysis-panel">
+                <div class="panel-glow-line"></div>
+                <div class="analysis-top">
+                    <div class="panel-header" style="margin-bottom:0">// Consequence Analysis</div>
+                    <button id="share-report-card" class="btn-share" aria-label="Share impact report card">◈ Share Report</button>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">Impact Energy</span>
+                        <strong id="energy-value" class="metric-value mv-orange">0 MT</strong>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Crater Diameter</span>
+                        <strong id="crater-value" class="metric-value mv-orange">0 km</strong>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Seismic Magnitude</span>
+                        <strong id="seismic-value" class="metric-value mv-orange">0.0</strong>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Socio-Economic</span>
+                        <strong id="socio-impact-value" class="metric-value mv-neutral">LOW</strong>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button id="generate-briefing" class="btn-briefing" aria-label="Generate detailed impact briefing">
+                        ◈ Generate Planetary Defense Briefing
+                    </button>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-container">
+                        <canvas id="energy-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
         </main>
-        
-        <footer class="text-center mt-8 md:mt-12 text-gray-500 text-sm">
-            <p>A project for the 2025 NASA Space Apps Challenge. Inspired by data from NASA's NEO API and USGS environmental datasets.</p>
-            <p>Project by Team Cosmic 🚀</p>
-            <p>&copy; 2025 GeoThreat Simulator</p>
-        </footer>
     </div>
-    
-    <div id="briefing-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1001] hidden modal-fade">
-        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-gray-700 modal-scale">
-            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-orange-400">Planetary Defense Briefing</h3>
-                <button id="close-modal" class="text-gray-400 hover:text-white text-2xl" aria-label="Close modal">&times;</button>
+
+    <!-- MODALS -->
+    <div id="briefing-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="briefing-modal-title">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="briefing-modal-title">Planetary Defense Briefing</h3>
+                <button id="close-modal" class="close-btn" aria-label="Close modal">&times;</button>
             </div>
-            <div id="modal-content" class="p-6 overflow-y-auto flex-grow prose text-gray-300"></div>
+            <div id="modal-content" class="modal-content"></div>
         </div>
     </div>
-    
-    <div id="report-card-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1001] hidden modal-fade">
-        <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700 modal-scale">
-             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-orange-400">Impact Report Card</h3>
-                <button id="close-report-card" class="text-gray-400 hover:text-white text-2xl" aria-label="Close report card">&times;</button>
-             </div>
-             <div id="report-card-content" class="p-6 text-gray-300 space-y-3"></div>
-             <div class="p-4 border-t border-gray-700">
-                <button id="copy-report-card" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg" aria-label="Copy report card to clipboard">Copy to Clipboard</button>
-             </div>
+
+    <div id="report-card-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="report-card-title">
+        <div class="modal-container modal-small">
+            <div class="modal-header">
+                <h3 id="report-card-title">Impact Report Card</h3>
+                <button id="close-report-card" class="close-btn" aria-label="Close report card">&times;</button>
+            </div>
+            <div id="report-card-content" class="modal-content"></div>
+            <div class="modal-footer">
+                <button id="copy-report-card" class="btn-copy" aria-label="Copy report to clipboard">◈ Copy to Clipboard</button>
+            </div>
         </div>
     </div>
-    
-    <textarea id="clipboard-helper" class="absolute -left-full"></textarea>
+
+    <textarea id="clipboard-helper" class="clipboard-helper"></textarea>
+
+    <script>
+    // ── ANIMATED STAR FIELD ──────────────────────────────────────
+    (function() {
+        const canvas = document.getElementById('star-field');
+        const ctx    = canvas.getContext('2d');
+
+        let W, H, stars = [];
+
+        function resize() {
+            W = canvas.width  = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+
+        function buildStars(n) {
+            stars = [];
+            const hues = ['38deg','45deg','30deg','0deg','220deg'];
+            const weights = [0.35, 0.25, 0.2, 0.1, 0.1];
+            for (let i = 0; i < n; i++) {
+                const rnd = Math.random();
+                let cum = 0, hue = '38deg';
+                for (let j = 0; j < weights.length; j++) { cum += weights[j]; if (rnd < cum) { hue = hues[j]; break; } }
+                stars.push({
+                    x:  Math.random() * W,
+                    y:  Math.random() * H,
+                    r:  Math.random() * 1.1 + 0.15,
+                    a:  Math.random(),
+                    da: (Math.random() - 0.5) * 0.004,
+                    vx: (Math.random() - 0.5) * 0.03,
+                    vy: (Math.random() - 0.5) * 0.03,
+                    hue: hue,
+                    sat: hue === '0deg' ? '0%' : '70%',
+                });
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, W, H);
+            stars.forEach(s => {
+                s.a += s.da;
+                if (s.a <= 0 || s.a >= 1) s.da *= -1;
+                s.x += s.vx; s.y += s.vy;
+                if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
+                if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${s.hue}, ${s.sat}, 90%, ${s.a * 0.85})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(render);
+        }
+
+        resize();
+        buildStars(700);
+        render();
+        window.addEventListener('resize', () => { resize(); buildStars(700); });
+    })();
+    </script>
 
     <script src="script.js" type="module"></script>
 </body>
 </html>
-
