@@ -1588,3 +1588,4 @@
 [2026-04-19T20:58:08] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-04-19T18:21:03] feat(impact): calculate localized shockwave radius
 [2026-04-19T22:59:17] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-04-19T20:23:28] test(orbital): add unit test for trajectory deflection math
