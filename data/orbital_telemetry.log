@@ -1245,3 +1245,4 @@
 [2026-04-20T23:14:35] feat(impact): calculate localized shockwave radius
 [2026-04-20T16:03:10] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-04-20T22:46:46] fix(physics): adjust kinetic impact energy calculation
+[2026-04-20T21:27:55] feat(trajectory): calibrate atmospheric entry drag coefficient
