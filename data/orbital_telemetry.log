@@ -1945,3 +1945,4 @@
 [2026-04-23T09:19:13] test(orbital): add unit test for trajectory deflection math
 [2026-04-23T09:09:14] test(orbital): add unit test for trajectory deflection math
 [2026-04-23T09:10:10] style(canvas): enhance asteroid fragment trail rendering
+[2026-04-23T21:25:21] perf(simulation): optimize orbital path interpolation cache
