@@ -2329,3 +2329,4 @@
 [2026-04-25T22:44:41] perf(simulation): optimize orbital path interpolation cache
 [2026-04-25T09:59:59] perf(simulation): optimize orbital path interpolation cache
 [2026-04-25T09:02:38] test(orbital): add unit test for trajectory deflection math
+[2026-04-25T15:25:57] refactor(engine): modularize celestial collision detector
