@@ -537,3 +537,4 @@
 [2026-04-28T22:09:18] perf(simulation): optimize orbital path interpolation cache
 [2026-04-28T21:17:55] perf(simulation): optimize orbital path interpolation cache
 [2026-04-28T15:26:19] perf(simulation): optimize orbital path interpolation cache
+[2026-04-28T10:14:55] fix(physics): adjust kinetic impact energy calculation
