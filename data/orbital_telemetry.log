@@ -516,3 +516,4 @@
 [2026-04-28T21:50:56] test(orbital): add unit test for trajectory deflection math
 [2026-04-28T18:01:31] refactor(engine): modularize celestial collision detector
 [2026-04-28T22:38:13] test(orbital): add unit test for trajectory deflection math
+[2026-04-28T12:45:04] refactor(engine): modularize celestial collision detector
