@@ -521,3 +521,4 @@
 [2026-04-28T14:20:22] refactor(engine): modularize celestial collision detector
 [2026-04-28T16:15:45] style(canvas): enhance asteroid fragment trail rendering
 [2026-04-28T15:24:38] feat(impact): calculate localized shockwave radius
+[2026-04-28T08:43:59] docs(telemetry): record planetary defense simulation run
