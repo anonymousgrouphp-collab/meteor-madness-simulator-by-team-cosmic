@@ -514,3 +514,4 @@
 [2026-04-28T20:01:34] style(canvas): enhance asteroid fragment trail rendering
 [2026-04-28T14:56:43] feat(impact): calculate localized shockwave radius
 [2026-04-28T21:50:56] test(orbital): add unit test for trajectory deflection math
+[2026-04-28T18:01:31] refactor(engine): modularize celestial collision detector
