@@ -835,3 +835,4 @@
 [2025-11-11T15:51:08] docs(telemetry): record planetary defense simulation run
 [2026-05-05T09:32:54] fix(physics): adjust kinetic impact energy calculation
 [2026-05-05T15:34:35] fix(physics): adjust kinetic impact energy calculation
+[2026-05-05T18:33:34] fix(physics): adjust kinetic impact energy calculation
