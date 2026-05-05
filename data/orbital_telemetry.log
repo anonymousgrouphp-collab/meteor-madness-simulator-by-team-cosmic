@@ -846,3 +846,4 @@
 [2026-05-05T08:49:42] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-05-05T08:05:20] perf(simulation): optimize orbital path interpolation cache
 [2026-05-05T10:05:44] docs(telemetry): record planetary defense simulation run
+[2026-05-05T23:51:06] feat(impact): calculate localized shockwave radius
