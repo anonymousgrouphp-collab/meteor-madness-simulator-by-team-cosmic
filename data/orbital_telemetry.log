@@ -1008,3 +1008,4 @@
 [2026-05-06T20:10:03] feat(impact): calculate localized shockwave radius
 [2026-05-06T12:46:25] refactor(engine): modularize celestial collision detector
 [2026-05-06T12:38:08] test(orbital): add unit test for trajectory deflection math
+[2026-05-06T08:35:51] fix(physics): adjust kinetic impact energy calculation
