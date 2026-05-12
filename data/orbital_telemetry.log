@@ -30,3 +30,4 @@
 [2026-05-12T12:00:18] docs(telemetry): record planetary defense simulation run
 [2026-05-12T08:54:39] feat(impact): calculate localized shockwave radius
 [2026-05-12T22:26:35] docs(telemetry): record planetary defense simulation run
+[2026-05-12T21:11:54] refactor(engine): modularize celestial collision detector
