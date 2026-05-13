@@ -1323,3 +1323,4 @@
 [2026-05-13T12:10:48] fix(physics): adjust kinetic impact energy calculation
 [2026-05-13T22:56:56] test(orbital): add unit test for trajectory deflection math
 [2026-05-13T15:36:28] test(orbital): add unit test for trajectory deflection math
+[2026-05-13T22:59:00] perf(simulation): optimize orbital path interpolation cache
