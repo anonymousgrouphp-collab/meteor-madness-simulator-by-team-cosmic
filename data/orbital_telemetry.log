@@ -2063,3 +2063,4 @@
 [2026-05-17T08:03:00] test(orbital): add unit test for trajectory deflection math
 [2026-05-17T14:47:10] test(orbital): add unit test for trajectory deflection math
 [2026-05-17T14:34:25] docs(telemetry): record planetary defense simulation run
+[2026-05-17T11:00:20] feat(trajectory): calibrate atmospheric entry drag coefficient
