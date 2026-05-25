@@ -433,3 +433,4 @@
 [2026-05-25T11:26:30] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-05-25T16:27:35] refactor(engine): modularize celestial collision detector
 [2026-05-25T10:04:05] style(canvas): enhance asteroid fragment trail rendering
+[2026-05-25T19:30:25] docs(telemetry): record planetary defense simulation run
