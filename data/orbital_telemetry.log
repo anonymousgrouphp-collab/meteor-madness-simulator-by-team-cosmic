@@ -422,3 +422,4 @@
 [2026-05-25T17:54:10] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-05-25T17:38:21] refactor(engine): modularize celestial collision detector
 [2026-05-25T11:43:09] fix(physics): adjust kinetic impact energy calculation
+[2026-05-25T14:30:31] docs(telemetry): record planetary defense simulation run
