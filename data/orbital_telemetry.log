@@ -2111,3 +2111,4 @@
 [2026-05-26T20:17:04] docs(telemetry): record planetary defense simulation run
 [2026-05-26T17:07:26] feat(impact): calculate localized shockwave radius
 [2026-05-26T15:18:53] feat(impact): calculate localized shockwave radius
+[2026-05-26T18:13:25] fix(physics): adjust kinetic impact energy calculation
