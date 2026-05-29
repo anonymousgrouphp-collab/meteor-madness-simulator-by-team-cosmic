@@ -2282,3 +2282,4 @@
 [2026-02-18T11:16:40] style(canvas): enhance asteroid fragment trail rendering
 [2026-02-18T16:29:07] docs(telemetry): record planetary defense simulation run
 [2026-05-29T18:50:13] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-05-29T21:36:51] feat(trajectory): calibrate atmospheric entry drag coefficient
