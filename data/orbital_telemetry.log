@@ -553,3 +553,4 @@
 [2026-06-02T16:29:15] feat(impact): calculate localized shockwave radius
 [2026-06-02T13:45:07] docs(telemetry): record planetary defense simulation run
 [2026-06-02T13:40:38] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-06-02T10:24:08] feat(trajectory): calibrate atmospheric entry drag coefficient
