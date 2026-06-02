@@ -578,3 +578,4 @@
 [2026-06-02T23:02:59] feat(impact): calculate localized shockwave radius
 [2026-06-02T10:22:21] docs(telemetry): record planetary defense simulation run
 [2026-06-02T17:59:32] perf(simulation): optimize orbital path interpolation cache
+[2026-06-02T08:06:09] style(canvas): enhance asteroid fragment trail rendering
