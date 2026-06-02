@@ -568,3 +568,4 @@
 [2026-06-02T22:55:37] perf(simulation): optimize orbital path interpolation cache
 [2026-06-02T17:25:15] perf(simulation): optimize orbital path interpolation cache
 [2026-06-02T08:57:14] feat(impact): calculate localized shockwave radius
+[2026-06-02T16:31:25] feat(impact): calculate localized shockwave radius
