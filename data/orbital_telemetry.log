@@ -2036,3 +2036,4 @@
 [2026-06-05T17:32:42] fix(physics): adjust kinetic impact energy calculation
 [2026-06-05T19:34:09] refactor(engine): modularize celestial collision detector
 [2026-06-05T21:34:31] refactor(engine): modularize celestial collision detector
+[2026-06-05T17:57:00] fix(physics): adjust kinetic impact energy calculation
