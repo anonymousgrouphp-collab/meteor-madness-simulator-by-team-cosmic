@@ -2408,3 +2408,4 @@
 [2026-06-11T16:21:32] perf(simulation): optimize orbital path interpolation cache
 [2026-06-11T17:09:01] docs(telemetry): record planetary defense simulation run
 [2026-06-11T16:51:54] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-06-11T10:23:13] test(orbital): add unit test for trajectory deflection math
