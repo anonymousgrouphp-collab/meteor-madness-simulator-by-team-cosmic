@@ -2400,3 +2400,4 @@
 [2026-06-11T09:24:00] test(orbital): add unit test for trajectory deflection math
 [2026-06-11T17:34:53] fix(physics): adjust kinetic impact energy calculation
 [2026-06-11T21:30:16] refactor(engine): modularize celestial collision detector
+[2026-06-11T15:02:03] feat(trajectory): calibrate atmospheric entry drag coefficient
