@@ -771,3 +771,4 @@
 [2026-06-21T21:49:00] feat(impact): calculate localized shockwave radius
 [2026-06-21T10:37:29] test(orbital): add unit test for trajectory deflection math
 [2026-06-21T17:41:14] feat(impact): calculate localized shockwave radius
+[2026-06-21T14:44:55] style(canvas): enhance asteroid fragment trail rendering
