@@ -800,3 +800,4 @@
 [2026-06-21T14:23:06] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-06-21T16:00:58] refactor(engine): modularize celestial collision detector
 [2026-06-21T11:17:41] feat(impact): calculate localized shockwave radius
+[2026-06-21T14:05:21] docs(telemetry): record planetary defense simulation run
