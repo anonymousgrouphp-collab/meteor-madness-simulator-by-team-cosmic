@@ -797,3 +797,4 @@
 [2026-06-21T14:29:26] fix(physics): adjust kinetic impact energy calculation
 [2026-06-21T11:43:35] feat(impact): calculate localized shockwave radius
 [2026-06-21T12:14:47] docs(telemetry): record planetary defense simulation run
+[2026-06-21T14:23:06] feat(trajectory): calibrate atmospheric entry drag coefficient
