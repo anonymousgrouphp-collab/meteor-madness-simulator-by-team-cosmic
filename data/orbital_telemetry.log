@@ -786,3 +786,4 @@
 [2026-06-21T08:20:49] refactor(engine): modularize celestial collision detector
 [2026-06-21T18:00:30] docs(telemetry): record planetary defense simulation run
 [2026-06-21T13:06:46] style(canvas): enhance asteroid fragment trail rendering
+[2026-06-21T21:16:44] style(canvas): enhance asteroid fragment trail rendering
