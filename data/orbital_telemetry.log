@@ -788,3 +788,4 @@
 [2026-06-21T13:06:46] style(canvas): enhance asteroid fragment trail rendering
 [2026-06-21T21:16:44] style(canvas): enhance asteroid fragment trail rendering
 [2026-06-21T14:40:25] test(orbital): add unit test for trajectory deflection math
+[2026-06-21T11:24:30] docs(telemetry): record planetary defense simulation run
