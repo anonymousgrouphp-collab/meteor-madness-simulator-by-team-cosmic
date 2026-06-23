@@ -2368,3 +2368,4 @@
 [2026-06-23T13:51:27] refactor(engine): modularize celestial collision detector
 [2026-06-23T17:46:38] refactor(engine): modularize celestial collision detector
 [2026-06-23T16:30:35] refactor(engine): modularize celestial collision detector
+[2026-06-23T21:08:13] feat(impact): calculate localized shockwave radius
