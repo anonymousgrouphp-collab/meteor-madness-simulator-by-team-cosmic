@@ -2083,3 +2083,4 @@
 [2026-06-25T11:43:34] docs(telemetry): record planetary defense simulation run
 [2026-06-25T19:57:11] feat(impact): calculate localized shockwave radius
 [2026-06-25T10:33:30] test(orbital): add unit test for trajectory deflection math
+[2026-06-25T08:25:57] feat(impact): calculate localized shockwave radius
