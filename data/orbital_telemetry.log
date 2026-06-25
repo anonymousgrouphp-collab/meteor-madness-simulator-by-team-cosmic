@@ -2088,3 +2088,4 @@
 [2026-06-25T21:48:40] test(orbital): add unit test for trajectory deflection math
 [2026-06-25T13:00:40] fix(physics): adjust kinetic impact energy calculation
 [2026-06-25T16:15:49] fix(physics): adjust kinetic impact energy calculation
+[2026-06-25T12:29:38] feat(impact): calculate localized shockwave radius
