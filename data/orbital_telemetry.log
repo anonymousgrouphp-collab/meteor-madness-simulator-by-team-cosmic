@@ -2177,3 +2177,4 @@
 [2026-06-29T09:33:54] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-06-29T19:19:38] fix(physics): adjust kinetic impact energy calculation
 [2026-06-29T16:28:29] style(canvas): enhance asteroid fragment trail rendering
+[2026-06-29T16:30:14] test(orbital): add unit test for trajectory deflection math
