@@ -2180,3 +2180,4 @@
 [2026-06-29T16:30:14] test(orbital): add unit test for trajectory deflection math
 [2026-06-29T14:22:49] perf(simulation): optimize orbital path interpolation cache
 [2026-06-29T17:28:55] style(canvas): enhance asteroid fragment trail rendering
+[2026-06-29T11:53:50] feat(impact): calculate localized shockwave radius
