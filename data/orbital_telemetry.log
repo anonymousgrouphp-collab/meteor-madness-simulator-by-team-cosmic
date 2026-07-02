@@ -1507,3 +1507,4 @@
 [2026-07-02T19:19:55] fix(physics): adjust kinetic impact energy calculation
 [2026-07-02T10:45:53] docs(telemetry): record planetary defense simulation run
 [2026-07-02T17:00:51] feat(impact): calculate localized shockwave radius
+[2026-07-02T18:06:25] style(canvas): enhance asteroid fragment trail rendering
