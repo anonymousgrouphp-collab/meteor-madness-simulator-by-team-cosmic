@@ -721,3 +721,4 @@
 [2026-07-14T16:52:24] perf(simulation): optimize orbital path interpolation cache
 [2026-07-14T16:21:54] refactor(engine): modularize celestial collision detector
 [2026-07-14T10:33:23] fix(physics): adjust kinetic impact energy calculation
+[2026-07-14T23:19:47] style(canvas): enhance asteroid fragment trail rendering
