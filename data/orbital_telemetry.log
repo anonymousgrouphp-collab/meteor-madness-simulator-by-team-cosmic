@@ -1049,3 +1049,4 @@
 [2026-07-18T20:55:31] docs(telemetry): record planetary defense simulation run
 [2026-07-18T20:33:49] perf(simulation): optimize orbital path interpolation cache
 [2026-07-18T08:23:48] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-07-18T20:34:09] fix(physics): adjust kinetic impact energy calculation
