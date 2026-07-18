@@ -1042,3 +1042,4 @@
 [2026-07-18T15:48:27] docs(telemetry): record planetary defense simulation run
 [2026-07-18T15:56:07] perf(simulation): optimize orbital path interpolation cache
 [2026-07-18T18:26:01] test(orbital): add unit test for trajectory deflection math
+[2026-07-18T15:36:48] feat(impact): calculate localized shockwave radius
