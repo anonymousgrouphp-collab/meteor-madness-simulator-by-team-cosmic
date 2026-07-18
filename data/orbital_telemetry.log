@@ -1058,3 +1058,4 @@
 [2026-07-18T12:46:04] perf(simulation): optimize orbital path interpolation cache
 [2026-07-18T10:36:08] test(orbital): add unit test for trajectory deflection math
 [2026-07-18T20:29:48] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-07-18T16:15:27] style(canvas): enhance asteroid fragment trail rendering
