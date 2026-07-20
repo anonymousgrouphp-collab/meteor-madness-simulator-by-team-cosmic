@@ -929,3 +929,4 @@
 [2026-07-20T10:15:28] style(canvas): enhance asteroid fragment trail rendering
 [2026-07-20T18:21:26] fix(physics): adjust kinetic impact energy calculation
 [2026-07-20T10:16:59] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-07-20T17:08:33] refactor(engine): modularize celestial collision detector
