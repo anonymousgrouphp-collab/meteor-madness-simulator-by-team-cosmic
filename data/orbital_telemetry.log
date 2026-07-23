@@ -2352,3 +2352,4 @@
 [2026-07-23T17:18:54] perf(simulation): optimize orbital path interpolation cache
 [2026-07-23T13:23:09] fix(physics): adjust kinetic impact energy calculation
 [2026-07-23T20:00:09] test(orbital): add unit test for trajectory deflection math
+[2026-07-23T13:13:58] style(canvas): enhance asteroid fragment trail rendering
