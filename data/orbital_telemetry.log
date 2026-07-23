@@ -2357,3 +2357,4 @@
 [2026-07-23T16:19:47] feat(impact): calculate localized shockwave radius
 [2026-07-23T23:56:11] refactor(engine): modularize celestial collision detector
 [2026-07-23T08:13:43] perf(simulation): optimize orbital path interpolation cache
+[2026-07-23T21:41:40] test(orbital): add unit test for trajectory deflection math
