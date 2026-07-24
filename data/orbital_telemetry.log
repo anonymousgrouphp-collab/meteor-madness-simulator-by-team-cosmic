@@ -969,3 +969,4 @@
 [2025-09-18T17:49:09] refactor(engine): modularize celestial collision detector
 [2026-07-24T20:36:35] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-07-24T21:39:44] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-07-24T23:09:25] fix(physics): adjust kinetic impact energy calculation
