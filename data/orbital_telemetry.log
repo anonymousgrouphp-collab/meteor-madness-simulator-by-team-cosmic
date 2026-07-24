@@ -974,3 +974,4 @@
 [2026-07-24T22:11:47] docs(telemetry): record planetary defense simulation run
 [2026-07-24T17:35:46] docs(telemetry): record planetary defense simulation run
 [2026-07-24T15:20:42] test(orbital): add unit test for trajectory deflection math
+[2026-07-24T15:57:33] perf(simulation): optimize orbital path interpolation cache
