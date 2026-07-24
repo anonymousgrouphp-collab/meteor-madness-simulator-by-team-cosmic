@@ -979,3 +979,4 @@
 [2026-07-24T08:57:22] refactor(engine): modularize celestial collision detector
 [2026-07-24T11:09:57] refactor(engine): modularize celestial collision detector
 [2026-07-24T18:01:35] perf(simulation): optimize orbital path interpolation cache
+[2026-07-24T20:37:48] test(orbital): add unit test for trajectory deflection math
