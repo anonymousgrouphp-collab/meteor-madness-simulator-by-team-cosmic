@@ -971,3 +971,4 @@
 [2026-07-24T21:39:44] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-07-24T23:09:25] fix(physics): adjust kinetic impact energy calculation
 [2026-07-24T22:48:26] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-07-24T22:11:47] docs(telemetry): record planetary defense simulation run
