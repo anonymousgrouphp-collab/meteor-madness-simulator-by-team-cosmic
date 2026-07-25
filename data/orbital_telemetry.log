@@ -2165,3 +2165,4 @@
 [2026-07-25T12:42:11] fix(physics): adjust kinetic impact energy calculation
 [2026-07-25T10:59:45] feat(impact): calculate localized shockwave radius
 [2026-07-25T15:59:49] perf(simulation): optimize orbital path interpolation cache
+[2026-07-25T22:31:10] refactor(engine): modularize celestial collision detector
