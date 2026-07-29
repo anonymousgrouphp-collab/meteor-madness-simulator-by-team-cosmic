@@ -1421,3 +1421,4 @@
 [2026-07-29T08:06:05] perf(simulation): optimize orbital path interpolation cache
 [2026-07-29T16:45:06] fix(physics): adjust kinetic impact energy calculation
 [2026-07-29T19:58:54] style(canvas): enhance asteroid fragment trail rendering
+[2026-07-29T20:03:00] feat(trajectory): calibrate atmospheric entry drag coefficient
