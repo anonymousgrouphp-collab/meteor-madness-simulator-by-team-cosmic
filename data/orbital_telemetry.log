@@ -1429,3 +1429,4 @@
 [2026-07-29T16:28:08] refactor(engine): modularize celestial collision detector
 [2026-07-29T16:54:10] refactor(engine): modularize celestial collision detector
 [2026-07-29T10:09:46] fix(physics): adjust kinetic impact energy calculation
+[2026-07-29T13:03:13] style(canvas): enhance asteroid fragment trail rendering
