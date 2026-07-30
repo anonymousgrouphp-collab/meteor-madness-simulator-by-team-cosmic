@@ -1385,3 +1385,4 @@
 [2026-07-30T18:21:37] style(canvas): enhance asteroid fragment trail rendering
 [2026-07-30T18:51:42] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-07-30T11:07:39] perf(simulation): optimize orbital path interpolation cache
+[2026-07-30T13:03:54] feat(impact): calculate localized shockwave radius
