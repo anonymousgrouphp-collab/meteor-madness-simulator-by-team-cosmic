@@ -1401,3 +1401,4 @@
 [2026-07-30T20:43:55] style(canvas): enhance asteroid fragment trail rendering
 [2026-07-30T21:27:31] refactor(engine): modularize celestial collision detector
 [2026-07-30T09:20:50] refactor(engine): modularize celestial collision detector
+[2026-07-30T16:10:00] style(canvas): enhance asteroid fragment trail rendering
