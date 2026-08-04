@@ -1873,3 +1873,4 @@
 [2026-08-04T23:51:24] style(canvas): enhance asteroid fragment trail rendering
 [2026-08-04T17:36:40] feat(impact): calculate localized shockwave radius
 [2026-08-04T17:30:00] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-08-04T08:08:26] feat(impact): calculate localized shockwave radius
