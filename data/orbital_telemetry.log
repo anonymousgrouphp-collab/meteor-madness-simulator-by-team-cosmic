@@ -2007,3 +2007,4 @@
 [2026-08-26T08:51:10] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-08-26T19:39:43] refactor(engine): modularize celestial collision detector
 [2026-08-26T19:04:39] test(orbital): add unit test for trajectory deflection math
+[2026-08-26T14:50:43] feat(impact): calculate localized shockwave radius
