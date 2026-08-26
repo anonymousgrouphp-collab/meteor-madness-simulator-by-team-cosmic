@@ -2005,3 +2005,4 @@
 [2026-08-26T17:32:53] feat(impact): calculate localized shockwave radius
 [2026-08-26T18:00:17] feat(impact): calculate localized shockwave radius
 [2026-08-26T08:51:10] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-08-26T19:39:43] refactor(engine): modularize celestial collision detector
