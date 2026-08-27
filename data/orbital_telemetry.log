@@ -760,3 +760,4 @@
 [2026-08-27T22:09:09] fix(physics): adjust kinetic impact energy calculation
 [2026-08-27T19:20:26] refactor(engine): modularize celestial collision detector
 [2026-08-27T16:28:42] docs(telemetry): record planetary defense simulation run
+[2026-08-27T12:13:24] test(orbital): add unit test for trajectory deflection math
