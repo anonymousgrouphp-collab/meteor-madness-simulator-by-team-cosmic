@@ -1081,3 +1081,4 @@
 [2026-08-30T15:23:03] style(canvas): enhance asteroid fragment trail rendering
 [2026-08-30T08:42:57] test(orbital): add unit test for trajectory deflection math
 [2026-08-30T20:24:46] test(orbital): add unit test for trajectory deflection math
+[2026-08-30T22:36:02] feat(trajectory): calibrate atmospheric entry drag coefficient
