@@ -1066,3 +1066,4 @@
 [2026-08-30T18:54:47] fix(physics): adjust kinetic impact energy calculation
 [2026-08-30T10:18:22] feat(impact): calculate localized shockwave radius
 [2026-08-30T22:51:48] feat(trajectory): calibrate atmospheric entry drag coefficient
+[2026-08-30T22:05:22] perf(simulation): optimize orbital path interpolation cache
