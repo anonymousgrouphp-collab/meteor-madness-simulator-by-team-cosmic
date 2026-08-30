@@ -1063,3 +1063,4 @@
 [2026-08-30T18:51:02] docs(telemetry): record planetary defense simulation run
 [2026-08-30T21:46:38] style(canvas): enhance asteroid fragment trail rendering
 [2026-08-30T17:41:08] style(canvas): enhance asteroid fragment trail rendering
+[2026-08-30T18:54:47] fix(physics): adjust kinetic impact energy calculation
