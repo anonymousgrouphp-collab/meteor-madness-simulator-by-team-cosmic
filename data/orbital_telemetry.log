@@ -1084,3 +1084,4 @@
 [2026-08-30T22:36:02] feat(trajectory): calibrate atmospheric entry drag coefficient
 [2026-08-30T11:10:17] perf(simulation): optimize orbital path interpolation cache
 [2026-08-30T18:54:23] style(canvas): enhance asteroid fragment trail rendering
+[2026-08-30T16:11:59] refactor(engine): modularize celestial collision detector
